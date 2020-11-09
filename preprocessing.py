@@ -31,6 +31,10 @@ def remove_url(text):
     return re.sub(r'http\S+', '', text)
 
 
+<<<<<<< HEAD
+=======
+# Remove stopwords
+>>>>>>> origin/lstm_merge
 def remove_stopwords(text, stop):
     text_adapted = []
     for i in text.split():
@@ -39,12 +43,20 @@ def remove_stopwords(text, stop):
     return " ".join(text_adapted)
 
 
+<<<<<<< HEAD
+=======
+# Collection function for text denoising
+>>>>>>> origin/lstm_merge
 def remove_noise(text, stop):
     text = remove_between_square_brackets(text)
     text = remove_url(text)
     return remove_stopwords(text, stop)
 
 
+<<<<<<< HEAD
+=======
+# ngrams function for data visualization
+>>>>>>> origin/lstm_merge
 def get_top_text_ngrams(corpus, n, g):
     vec = CountVectorizer(ngram_range=(g, g)).fit(corpus)
     bag_of_words = vec.transform(corpus)
@@ -92,13 +104,23 @@ def vizualise_data(df, text_col, valid_col):
 
 df = import_dataset('fake_job_postings.csv')
 
+<<<<<<< HEAD
 columns = ['text', 'fake']
 index = range(0, len(df))
+=======
+train_col = "text"
+valid_col = "fake"
+
+columns = [train_col, valid_col]
+index = range(0, len(df))
+
+>>>>>>> origin/lstm_merge
 df_adapted = pandas.DataFrame(index=index, columns=columns)
 
 for index, row in df.iterrows():
     row = row.copy()
     new_text = str(row["company_profile"]) + str(row["description"]) + str(row["requirements"])
+<<<<<<< HEAD
     df_adapted.loc[index, "text"] = new_text
     df_adapted.loc[index, "fake"] = row["fraudulent"]
 
@@ -113,3 +135,15 @@ print(type(df_adapted))
 df_adapted.to_csv('fake_job_postings_processed_test.csv', index=False)
 
 vizualise_data(df_adapted, 'text', 'fake')
+=======
+    df_adapted.loc[index, train_col] = new_text
+    df_adapted.loc[index, valid_col] = row["fraudulent"]
+
+stop = init_stopword()
+df_adapted[train_col] = df_adapted.apply(lambda x: remove_noise(x[train_col], stop), axis=1)
+df_adapted = df_adapted.drop_duplicates(subset=[train_col], keep=False)
+
+df_adapted.to_csv('fake_job_postings_processed.csv', index=False)
+
+vizualise_data(df_adapted, train_col, valid_col)
+>>>>>>> origin/lstm_merge
