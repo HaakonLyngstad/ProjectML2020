@@ -2,17 +2,8 @@ from keras import (
     layers,
     models,
 )
-import pandas as pd
-from keras.models import Sequential
-from keras.layers import Dense, LSTM, Embedding
-from keras.layers import SpatialDropout1D
 from keras.callbacks import EarlyStopping
-from tokenize_text import tokenize_text
-from sklearn import model_selection
-from keras.metrics import Precision, Recall, Accuracy
-import matplotlib.pyplot as plt
-from data_processing import get_dataframe
-# df = pd.read_csv('Combined_News_DJIA.csv')
+from keras.metrics import Precision, Recall
 
 # This is fixed.
 EMBEDDING_DIM_RCNN = 200
@@ -49,7 +40,7 @@ class RCNN_model:
 
         # Compile the model
         model = models.Model(inputs=input_layer, outputs=output_layer2)
-        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[Precision(), Recall()])
+        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=["accuracy", Precision(), Recall()])
 
         model.summary()
 
@@ -61,42 +52,5 @@ class RCNN_model:
         return history
 
     def evaluate(self, valid_x, valid_y):
-        self.model.add_metric(Accuracy(), name="name")
         results = self.model.evaluate(valid_x, valid_y, batch_size=self.BATCH_SIZE)
-        return results
-
-
-"""
-train_col = "text"
-valid_col = "fake"
-cols = [train_col, valid_col]
-filename = "fake_job_postings_processed.csv"
-df = get_dataframe(col_list=cols, filename=filename)
-
-# Split dataset into training and validation sets
-train_x, valid_x, train_y, valid_y = model_selection.train_test_split(
-    df[train_col], df[valid_col], train_size=0.7, test_size=0.3)
-
-train_x, valid_x = tokenize_text(train_x.to_numpy().tolist(),
-                                 valid_x.to_numpy().tolist(),
-                                 MAX_NB_WORDS,
-                                 MAX_SEQUENCE_LENGTH)
-
-EPOCH_SIZE = 10
-BATCH_SIZE = 128
-
-rcnn = RCNN_model(input_length=train_x.shape[1], EMBEDDING_DIM=EMBEDDING_DIM_RCNN, MAX_NB_WORDS=MAX_NB_WORDS, MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH, EPOCH_SIZE=EPOCH_SIZE, BATCH_SIZE=BATCH_SIZE)
-
-history = rcnn.fit(train_x, train_y)
-
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('Model loss')
-plt.ylabel('Loss')
-plt.xlabel('Epoch')
-plt.legend(['train', 'validation'], loc='upper left')
-plt.show()
-
-predictions = rcnn.evaluate(valid_x, valid_y)
-print(predictions)
-"""
+        return results[1:]
