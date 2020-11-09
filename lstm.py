@@ -31,7 +31,7 @@ class LSTM_model:
 
     def evaluate(self, valid_x, valid_y):
         results = self.model.evaluate(valid_x, valid_y, batch_size=self.BATCH_SIZE)
-        return results
+        return results[1:]
 
 """
 model = build_lstm()

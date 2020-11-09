@@ -26,10 +26,10 @@ MAX_NB_WORDS = 50000
 # Max number of words in each text.
 MAX_SEQUENCE_LENGTH = 500
 
-RCNN_EPOCHS = 1
+RCNN_EPOCHS = 10
 RCNN_BATCH_SIZE = 128
 
-LSTM_EPOCHS = 1
+LSTM_EPOCHS = 8
 LSTM_BATCH_SIZE = 64
 
 processed_data, train_y, valid_y = get_processed_dataset_dict(
@@ -79,5 +79,8 @@ for clfl, clfn in zip(classifier_list, classifier_names):
         train_y=train_y,
         valid_y=valid_y
     )
-    results_df.append([clfn] + metrics, ignore_index=True)
+    results_df.loc[len(results_df)] = [clfn] + metrics
+    print(results_df)
+
+print(results_df)
 results_df.to_csv("models/metrics.csv", index=False)
