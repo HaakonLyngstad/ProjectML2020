@@ -3,15 +3,22 @@ from sklearn.linear_model import LogisticRegression
 from keras.models import load_model
 from keras.utils import to_categorical
 from numpy import dstack
+import pickle
 
 
-def load_all_models(n_models):
-    all_models = list()
-    for i in range(n_models):
-        filename = 'models/model_' + str(i + 1) + '.h5'
-        model = load_model(filename)
+def load_all_models(names):
+    models = list()
+    for name in names:
+        if name in ["RCNN", "LSTM"]:
+            # keras models
+            filename = ""
+            model = load_model(filename)
+        else:
+            #sklearn models
+            filename = "models/" + name + '.pickle'
+            model = pickle.load(open(filename, 'rb'))
         all_models.append(model)
-        print('>loaded %s' % filename)
+        print(f'Loaded [{filename}]')
     return all_models
 
 
