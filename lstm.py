@@ -6,6 +6,7 @@ from keras.layers import Dense, LSTM, Embedding
 from keras.layers import SpatialDropout1D
 from keras.callbacks import EarlyStopping
 from tokenize_text import tokenize_text
+from keras.metrics import Precision, Recall
 
 
 df = pd.read_csv('Combined_News_DJIA.csv')
@@ -64,14 +65,14 @@ ytest = test['Label']
 #print(xtrain.shape, ytrain.shape)
 #print(xtest.shape, ytest.shape)
 
-#print(xtrain[2])
+print(xtrain[2])
 
 model = Sequential()
 model.add(Embedding(input_dim=MAX_NB_WORDS, output_dim=EMBEDDING_DIM, input_length=xtrain.shape[1]))
-model.add(SpatialDropout1D(0.2))
+model.add(SpatialDropout1D(0.4))
 model.add(LSTM(units=16, dropout=0.2, recurrent_dropout=0.2))
 model.add(Dense(1, activation='sigmoid'))
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', 'binary_accuracy'])
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', 'binary_accuracy', Precision(), Recall()])
 
 model.summary()
 
