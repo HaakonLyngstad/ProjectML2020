@@ -127,10 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-<<<<<<< HEAD
-=======
 
 # ML models
 .models
 /models
->>>>>>> origin/lstm_merge
