@@ -1,31 +1,21 @@
 from sklearn import (
     model_selection,
     preprocessing,
-    linear_model,
     naive_bayes,
     metrics,
-    svm
+    svm,
 )
 from sklearn.feature_extraction.text import (
     TfidfVectorizer,
     CountVectorizer
 )
-from sklearn import (
-    decomposition,
-    ensemble
-)
+from sklearn import ensemble
 
 import pandas
 import xgboost
-from keras.preprocessing import (
-    text,
-    sequence
-)
-from keras import (
-    layers,
-    models,
-    optimizers
-)
+
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 
 
 def import_dataset(filename):
@@ -40,45 +30,64 @@ def get_dataframe(col_list, filename):
 
 
 def count_vectors(train_x, valid_x, train_col):
-    vectors = []
     # transform the training and validation data using count vectorizer object
-    count_vect = CountVectorizer(analyzer='word', token_pattern=r'\w{1,}')
+    count_vect = CountVectorizer(analyzer='word',
+                                 token_pattern=r'\w{1,}')
     count_vect.fit(train_col)
 
-    xtrain_count = count_vect.transform(train_x)
-    xvalid_count = count_vect.transform(valid_x)
+    train_x_count = count_vect.transform(train_x)
+    valid_x_count = count_vect.transform(valid_x)
 
-    vectors.append((xtrain_count, xvalid_count))
+    return (train_x_count, valid_x_count)
+
+def tfid_vectors(train_x, valid_x, train_col):
     # word level tf-idf
-    tfidf_vect = TfidfVectorizer(analyzer='word', token_pattern=r'\w{1,}', max_features=5000)
+    tfidf_vect = TfidfVectorizer(analyzer='word',
+                                 token_pattern=r'\w{1,}',
+                                 max_features=5000)
+
     tfidf_vect.fit(train_col)
-    xtrain_tfidf =  tfidf_vect.transform(train_x)
-    xvalid_tfidf =  tfidf_vect.transform(valid_x)
-    vectors.append((xtrain_tfidf, xvalid_tfidf))
+    train_x_tfid = tfidf_vect.transform(train_x)
+    valid_x_tfid = tfidf_vect.transform(valid_x)
+    return (train_x_tfid, valid_x_tfid)
 
 
-    # ngram level tf-idf 
-    tfidf_vect_ngram = TfidfVectorizer(analyzer='word', token_pattern=r'\w{1,}', ngram_range=(2,3), max_features=5000)
+def ngram_vectors(train_x, valid_x, train_col):
+    # ngram level tf-idf
+    tfidf_vect_ngram = TfidfVectorizer(analyzer='word',
+                                       token_pattern=r'\w{1,}',
+                                       ngram_range=(2, 3),
+                                       max_features=5000)
     tfidf_vect_ngram.fit(train_col)
-    xtrain_tfidf_ngram =  tfidf_vect_ngram.transform(train_x)
-    xvalid_tfidf_ngram =  tfidf_vect_ngram.transform(valid_x)
-    vectors.append((xtrain_tfidf_ngram, xvalid_tfidf_ngram))
+    train_x_ngram = tfidf_vect_ngram.transform(train_x)
+    valid_x_ngram = tfidf_vect_ngram.transform(valid_x)
 
-    # characters level tf-idf
-    tfidf_vect_ngram_chars = TfidfVectorizer(analyzer='char', ngram_range=(2,3), max_features=5000)
-    tfidf_vect_ngram_chars.fit(train_col)
-    xtrain_tfidf_ngram_chars = tfidf_vect_ngram_chars.transform(train_x) 
-    xvalid_tfidf_ngram_chars = tfidf_vect_ngram_chars.transform(valid_x) 
-    # predict the labels on validation dataset
-    vectors.append((xtrain_tfidf_ngram_chars, xvalid_tfidf_ngram_chars))
+    return (train_x_ngram, valid_x_ngram)
 
-    return vectors
+
+def tokenize_text(train, test, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
+
+    tokenizer = Tokenizer(num_words=MAX_NB_WORDS, filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
+    texts = train + test
+
+    tokenizer.fit_on_texts(texts)
+    word_index = tokenizer.word_index
+
+    print('Found %s unique tokens.' % len(word_index))
+
+    xtrain = tokenizer.texts_to_sequences(train)
+    xtrain = pad_sequences(xtrain, maxlen=MAX_SEQUENCE_LENGTH)
+
+    xtest = tokenizer.texts_to_sequences(test)
+    xtest = pad_sequences(xtest, maxlen=MAX_SEQUENCE_LENGTH)
+
+    return xtrain, xtest
 
 
 def train_model(classifier, name, train_x, train_y, valid_x, valid_y):
     # fit the training dataset on the classifier
-    #print("\n\nFVT: \n", feature_vector_train.shape, "\n\n\nLABEL: \n", label)
     classifier.fit(train_x, train_y)
+
     # predict the labels on validation dataset
     predictions = classifier.predict(valid_x)
 
@@ -92,41 +101,80 @@ def train_model(classifier, name, train_x, train_y, valid_x, valid_y):
     print("F1: ", f1)
     print("PRECISION: ", precision)
     print("RECALL: ", recall)
-    print(pandas.crosstab(valid_y, predictions, rownames=["Actual"], colnames=["Predicted"]))
+    print(pandas.crosstab(valid_y, predictions,
+                          rownames=["Actual"],
+                          colnames=["Predicted"]))
     return
 
-# Define dataset
+
+def data_processor(train_x, valid_x, train_col):
+    processed_data = dict()
+
+    processed_data["NB"] = count_vectors(train_x=train_x,
+                                         valid_x=valid_x,
+                                         train_col=train_col)
+    processed_data["SVM"] = tfid_vectors(train_x=train_x,
+                                         valid_x=valid_x,
+                                         train_col=train_col)
+    ngram_vector = ngram_vectors(train_x=train_x,
+                                 valid_x=valid_x,
+                                 train_col=train_col)
+    processed_data["RFC"] = ngram_vector
+    processed_data["ADA"] = ngram_vector
+    processed_data["XGBC"] = ngram_vector
+    processed_data["BG"] = ngram_vector
+
+
+    tokenized_sequence = tokenize_text(train_x.to_numpy().tolist(),
+                                       valid_x.to_numpy().tolist(),
+                                       MAX_NB_WORDS,
+                                       MAX_SEQUENCE_LENGTH)
+
+    processed_data["RCNN"] = tokenized_sequence
+    processed_data["LSTM"] = tokenized_sequence
+
+    return processed_data
+
+
+def get_processed_dataset_dict(train_col_name, valid_col_name, filename, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
+    # Import dataframe from csv
+    cols = [train_col, valid_col]
+    df = get_dataframe(col_list=cols, filename=filename)
+
+    # Split dataset into training and validation sets
+    train_x, valid_x, train_y, valid_y = model_selection.train_test_split(
+        df[train_col], df[valid_col], train_size=0.5, test_size=0.5)
+
+    return data_processor(train_x=train_x,
+                          valid_x=valid_x,
+                          train_col=df[train_col])
+
+
+
 train_col = "text"
 valid_col = "fake"
 filename = "fake_job_postings_processed.csv"
+# This is fixed.
+EMBEDDING_DIM_LSTM = 16
+# The maximum number of words to be used. (most frequent)
+MAX_NB_WORDS = 50000
+# Max number of words in each text.
+MAX_SEQUENCE_LENGTH = 500
 
-# Import dataframe from csv
-cols = [train_col, valid_col]
-df = get_dataframe(col_list=cols, filename=filename)
-
-vizualise_data(df, train_col, valid_col)
-exit()
-
-# Split dataset into training and validation sets
-train_x, valid_x, train_y, valid_y = model_selection.train_test_split(
-    df[train_col], df[valid_col], train_size=0.5, test_size=0.5
-)
-
-training_sets = count_vectors(train_x=train_x,
-                              valid_x=valid_x,
-                              train_col=df[train_col])
-
-print(count_vectors[0][1])
-
-classifier_list = [naive_bayes.MultinomialNB(), svm.SVC(), ensemble.RandomForestClassifier(), ensemble.AdaBoostClassifier(), xgboost.XGBClassifier()]
-classifier_names = ["Naive Bayes", "SVM", "RFC", "AdaBoost", "XGBC"]
+classifier_list = [naive_bayes.MultinomialNB(),
+                   svm.SVC(),
+                   ensemble.RandomForestClassifier(),
+                   ensemble.AdaBoostClassifier(),
+                   xgboost.XGBClassifier(),
+                   ensemble.BaggingClassifier()]
+classifier_names = ["NB", "SVM", "RFC", "ADA", "XGBC", "BG", "RCNN", "LSTM"]
 for index, classifier in enumerate(classifier_list):
-    for (train_x, valid_x) in training_sets[0:2]:
-        train_model(
-            classifier,
-            classifier_names[index],
-            train_x,
-            train_y,
-            valid_x,
-            valid_y
-        )
+    (train_x, valid_x) = processed_data[classifier_names[index]]
+    train_model(
+        classifier,
+        classifier_names[index],
+        train_x,
+        train_y,
+        valid_x,
+        valid_y
+    )
