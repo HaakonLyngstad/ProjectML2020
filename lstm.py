@@ -17,8 +17,8 @@ class LSTM_model:
 
         model = Sequential()
         model.add(Embedding(input_dim=MAX_NB_WORDS, output_dim=EMBEDDING_DIM, input_length=input_length))
-        #model.add(SpatialDropout1D(0.5))
-        model.add(LSTM(units=EMBEDDING_DIM, dropout=0.7, recurrent_dropout=0.7))
+        model.add(SpatialDropout1D(0.5))
+        model.add(LSTM(units=EMBEDDING_DIM, dropout=0.2, recurrent_dropout=0.2))
         model.add(Dense(units=EMBEDDING_DIM, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
         model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', Precision(), Recall()])

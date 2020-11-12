@@ -113,7 +113,7 @@ def get_processed_dataset_dict(train_col, valid_col, filename, MAX_NB_WORDS, MAX
 
     # Split dataset into training and validation sets
     train_x, valid_x, train_y, valid_y = model_selection.train_test_split(
-        df[train_col], df[valid_col], train_size=0.7, test_size=0.3)
+        df[train_col], df[valid_col], train_size=0.7, test_size=0.3, stratify=df[valid_col])
 
     return (data_processor(train_x=train_x,
                           valid_x=valid_x,

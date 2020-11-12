@@ -2,19 +2,67 @@ from sklearn.metrics import accuracy_score
 from sklearn.linear_model import LogisticRegression
 from keras.models import load_model
 from keras.utils import to_categorical
+import numpy as np
 from numpy import dstack
+from stacked_generalizer import StackedGeneralizer
+from data_processing import get_processed_dataset_dict
+import pickle
 
 
-def load_all_models(n_models):
+def load_all_models(classifier_names):
     all_models = list()
-    for i in range(n_models):
-        filename = 'models/model_' + str(i + 1) + '.h5'
-        model = load_model(filename)
+    for clfn in classifier_names:
+        if clfn in ["RCNN", "LSTM"]:
+            filename = f'models/{clfn}'
+            model = load_model(filename)
+        else:
+            filename = f'models/{clfn}.pickle'
+            model = pickle.load(open(filename, 'rb'))
         all_models.append(model)
-        print('>loaded %s' % filename)
+        print(f'>loaded {filename}')
     return all_models
 
 
+classifier_names = ["NB", "SVM", "RFC", "ADA", "XGBC", "BG", "RCNN", "LSTM"]
+train_col = "text"
+valid_col = "fake"
+csvfile = "fake_job_postings_processed.csv"
+MAX_NB_WORDS = 50000
+MAX_SEQUENCE_LENGTH = 500
+
+base_models = load_all_models(classifier_names)
+
+# printing to check
+print(type(base_models))
+for i in range(len(base_models)):
+    print(type(base_models[i]))
+
+
+processed_data, train_y, valid_y = get_processed_dataset_dict(
+    train_col=train_col,
+    valid_col=valid_col,
+    filename=csvfile,
+    MAX_NB_WORDS=MAX_NB_WORDS,
+    MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
+
+(train_x, valid_x) = processed_data["NB"]
+
+print(train_x[0])
+
+# TODO: initialize base models
+
+stacking_model = LogisticRegression()
+sg = StackedGeneralizer(base_models, stacking_model, n_folds=5, verbose=True)
+sg.fit(train_x, train_y)
+pred = sg.predict(train_x)
+pred_classes = [np.argmax(p) for p in pred]
+
+_ = sg.evaluate(train_y, pred_classes)
+
+
+
+
+"""
 # create stacked model input dataset as outputs from the ensemble
 def stacked_dataset(members, inputX):
     stackX = None
@@ -63,3 +111,4 @@ model = fit_stacked_model(members, xtest, ytest)
 yhat = stacked_prediction(members, model, xtest)
 acc = accuracy_score(ytest, yhat)
 print('Stacked Test Accuracy: %.3f' % acc)
+"""
