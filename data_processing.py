@@ -106,7 +106,11 @@ def data_processor(train_x, valid_x, train_col, MAX_NB_WORDS, MAX_SEQUENCE_LENGT
     return processed_data
 
 
-def get_processed_dataset_dict(train_col, valid_col, filename, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
+def get_processed_dataset_dict(train_col,
+                               valid_col,
+                               filename,
+                               MAX_NB_WORDS,
+                               MAX_SEQUENCE_LENGTH):
     # Import dataframe from csv
     cols = [train_col, valid_col]
     df = get_dataframe(col_list=cols, filename=filename)
@@ -116,22 +120,9 @@ def get_processed_dataset_dict(train_col, valid_col, filename, MAX_NB_WORDS, MAX
         df[train_col], df[valid_col], train_size=0.7, test_size=0.3)
 
     return (data_processor(train_x=train_x,
-                          valid_x=valid_x,
-                          train_col=df[train_col],
-                          MAX_NB_WORDS=MAX_NB_WORDS,
-                          MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH), 
+                           valid_x=valid_x,
+                           train_col=df[train_col],
+                           MAX_NB_WORDS=MAX_NB_WORDS,
+                           MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH),
             train_y,
             valid_y)
-
-
-"""
-for index, classifier in enumerate(classifier_list):
-    (train_x, valid_x) = processed_data[classifier_names[index]]
-    train_model(
-        classifier,
-        classifier_names[index],
-        train_x,
-        train_y,
-        valid_x,
-        valid_y
-    )"""

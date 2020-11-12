@@ -69,6 +69,22 @@ if os.path.exists(dir):
 os.makedirs(dir)
 
 results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall"])
+
+clfn = "ADA"
+(train_x, valid_x) = processed_data[clfn]
+metrics = train_model(
+    classifier=ensemble.AdaBoostClassifier(),
+    name=clfn,
+    train_x=train_x,
+    valid_x=valid_x,
+    train_y=train_y,
+    valid_y=valid_y
+)
+results_df.loc[len(results_df)] = [clfn] + metrics
+print(results_df)
+exit()
+
+results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall"])
 for clfl, clfn in zip(classifier_list, classifier_names):
     (train_x, valid_x) = processed_data[clfn]
     metrics = train_model(
