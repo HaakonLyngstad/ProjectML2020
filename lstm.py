@@ -8,7 +8,7 @@ from keras.layers import SpatialDropout1D
 from keras.callbacks import EarlyStopping
 from tokenize_text import tokenize_text
 from keras.metrics import Precision, Recall
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 class LSTM_model:
     def __init__(self, input_length, EMBEDDING_DIM, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH, EPOCH_SIZE, BATCH_SIZE):
