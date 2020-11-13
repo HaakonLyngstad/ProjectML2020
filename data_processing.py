@@ -2,11 +2,9 @@ from sklearn.feature_extraction.text import (
     TfidfVectorizer,
     CountVectorizer
 )
-from sklearn import ensemble, model_selection, metrics
+from sklearn import model_selection
 
 import pandas
-import xgboost
-
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
@@ -117,7 +115,7 @@ def get_processed_dataset_dict(train_col,
 
     # Split dataset into training and validation sets
     train_x, valid_x, train_y, valid_y = model_selection.train_test_split(
-        df[train_col], df[valid_col], train_size=0.7, test_size=0.3)
+        df[train_col], df[valid_col], train_size=0.7, test_size=0.3, stratify=df[valid_col])
 
     return (data_processor(train_x=train_x,
                            valid_x=valid_x,

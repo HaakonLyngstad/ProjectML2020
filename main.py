@@ -4,13 +4,16 @@ from lstm import LSTM_model
 from rcnn import RCNN_model
 from sklearn import (
     naive_bayes,
-    svm
+    svm,
+    tree,
 )
+from sklearn.model_selection import GridSearchCV
 from sklearn import ensemble
 import xgboost
 import pandas
 import os
 import shutil
+
 
 train_col = "text"
 valid_col = "fake"
@@ -42,10 +45,13 @@ processed_data, train_y, valid_y = get_processed_dataset_dict(
 input_length_rcnn = processed_data["RCNN"][0].shape[1]
 input_length_lstm = processed_data["LSTM"][0].shape[1]
 
+# AdaBoost decision tree
+dct = tree.DecisionTreeClassifier(max_depth=4, max_features="auto")
+
 classifier_list = [naive_bayes.MultinomialNB(),
                    svm.SVC(),
                    ensemble.RandomForestClassifier(),
-                   ensemble.AdaBoostClassifier(),
+                   ensemble.AdaBoostClassifier(base_estimator=dct, n_estimators=10000, learning_rate=0.0045),
                    xgboost.XGBClassifier(),
                    ensemble.BaggingClassifier(),
                    RCNN_model(input_length=input_length_rcnn,
@@ -68,12 +74,17 @@ if os.path.exists(dir):
     shutil.rmtree(dir)
 os.makedirs(dir)
 
-results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall"])
+results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-Score"])
 
-clfn = "ADA"
+parameters = {'n_estimators': (1, 2),
+              'base_estimator__C': (1, 2)}
+
+clfn = "BG"
 (train_x, valid_x) = processed_data[clfn]
 metrics = train_model(
-    classifier=ensemble.AdaBoostClassifier(),
+    GridSearchCV(ensemble.BaggingClassifier(svm.SVC()),
+                 parameters,
+                 scoring="roc_auc"),
     name=clfn,
     train_x=train_x,
     valid_x=valid_x,
@@ -84,7 +95,7 @@ results_df.loc[len(results_df)] = [clfn] + metrics
 print(results_df)
 exit()
 
-results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall"])
+results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-Score"])
 for clfl, clfn in zip(classifier_list, classifier_names):
     (train_x, valid_x) = processed_data[clfn]
     metrics = train_model(
