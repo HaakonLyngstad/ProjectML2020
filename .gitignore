@@ -131,3 +131,6 @@ dmypy.json
 # ML models
 .models
 /models
+
+mlwebiste/media/
+
