@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block content %}
+<div class="parallax">
+    <div id="group1" class="parallax__group">
+      <div class="parallax__layer parallax__layer--base">
+      </div>
+    </div>
+    <div id="group4" class="parallax__group">
+        <div class="parallax__layer parallax__layer--fore">
+            <title>TEST</title>
+        </div>
+    </div>
+    <div id="group2" class="parallax__group">
+      <div class="parallax__layer parallax__layer--base">
+        <div class="title">Base Layer</div>
+      </div>
+      <div class="parallax__layer parallax__layer--back">
+        <div class="title">Background Layer</div>
+      </div>
+    </div>
+    <div id="group3" class="parallax__group">
+      <div class="parallax__layer parallax__layer--fore">
+        <div class="row">
+            <div class="col-md-4 offset-4 align-center" style="margin-top: 100px;">
+                <div class="upload-form">
+                    <form method="post" action="{% url 'support' %}" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-success">Save person</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="parallax__layer parallax__layer--base">
+        <div class="title">Base Layer</div>
+      </div>
+    </div>
+</div>
+
+<!-- 
+<div class="parallax_v1">
+    <div id="group1" class="parallax__group">
+        <div class="parallax__layer parallax__layer--base">
+            <div class="title">
+                BASE
+            </div>
+        </div>
+    </div>
+    <div id="group2" class="parallax__group">
+        <div class="parallax__layer parallax__layer--back">
+            asdasd
+        </div>
+        <div class="parallax__layer parallax__layer--base">
+            
+        </div>
+    </div>
+</div>
+-->
+
+{% endblock %}

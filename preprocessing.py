@@ -47,6 +47,13 @@ def remove_noise(text, stop):
     return remove_stopwords(text, stop)
 
 
+def switch_num(valid):
+    if valid == 1:
+        return 0
+    else:
+        return 1
+
+
 # ngrams function for data visualization
 def get_top_text_ngrams(corpus, n, g):
     vec = CountVectorizer(ngram_range=(g, g)).fit(corpus)
@@ -113,6 +120,8 @@ stop = init_stopword()
 df_adapted[train_col] = df_adapted.apply(lambda x: remove_noise(x[train_col], stop), axis=1)
 df_adapted = df_adapted.drop_duplicates(subset=[train_col], keep=False)
 
-df_adapted.to_csv('fake_job_postings_processed.csv', index=False)
+df_adapted[valid_col] = df_adapted.apply(lambda x: switch_num(x[valid_col]), axis=1)
+
+df_adapted.to_csv('fake_job_postings_processed_switched.csv', index=False)
 
 vizualise_data(df_adapted, train_col, valid_col)
