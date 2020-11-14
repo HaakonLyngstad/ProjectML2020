@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Container element -->
+    <div class="parallax_v2 w3-display-container w3-animate-opacity w3-text-white" style="padding-top: 50px;">
+        <div class="row">
+            <div class="col-md-8 offset-2 title-card" style="height: 300px;">
+                TEST
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 50px; margin-bottom: 100px;">
+            <div class="col-md-2 offset-2 d-flex justify-content-center">
+                <figure class="snip1529 w3-animate-opacity">
+                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/pr-sample13.jpg" alt="pr-sample13" />
+                    <figcaption>
+                    <h3>Bagging</h3>
+                    <p>Which is worse, that everyone has his price, or that the price is always so low.</p>
+                    </figcaption>
+                    <div class="hover"><i class="ion-android-open"></i></div>
+                    <a href="#"></a>
+                </figure>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center">
+                <figure class="snip1529 w3-animate-opacity">
+                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/pr-sample13.jpg" alt="pr-sample13" />
+                    <figcaption>
+                      <h3>An Abstract Post Heading</h3>
+                      <p>Which is worse, that everyone has his price, or that the price is always so low.</p>
+                    </figcaption>
+                    <div class="hover"><i class="ion-android-open"></i></div>
+                    <a href="#"></a>
+                </figure>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center">
+            <figure class="snip1529 w3-animate-opacity">
+                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/pr-sample13.jpg" alt="pr-sample13" />
+                <figcaption>
+                  <h3>An Abstract Post Heading</h3>
+                  <p>Which is worse, that everyone has his price, or that the price is always so low.</p>
+                </figcaption>
+                <div class="hover"><i class="ion-android-open"></i></div>
+                <a href="#"></a>
+            </figure>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center">
+                <figure class="snip1529 w3-animate-opacity">
+                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/pr-sample13.jpg" alt="pr-sample13" />
+                    <figcaption>
+                      <h3>An Abstract Post Heading</h3>
+                      <p>Which is worse, that everyone has his price, or that the price is always so low.</p>
+                    </figcaption>
+                    <div class="hover"><i class="ion-android-open"></i></div>
+                    <a href="#"></a>
+                </figure>
+                </div>
+        </div>
+    </div>
+
+    <script>
+        /* Demo purposes only */
+        $(".hover").mouseleave(
+        function() {
+            $(this).removeClass("hover");
+        }
+        );
+    </script>
+{% endblock content %}
