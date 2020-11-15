@@ -7,13 +7,12 @@ from .forms import DatasetForm
 
 
 def main_view(request):
-    variable = 3
     return render(request, 'main.html')
-    #return HttpResponse('Hællæ på ræ')
 
 
-def predicate(request):
-    return render(request, 'predicate.html')
+
+def methods(request):
+    return render(request, 'methods.html')
 
 
 def support(request):

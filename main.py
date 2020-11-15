@@ -93,7 +93,7 @@ metrics = train_model(
 )
 results_df.loc[len(results_df)] = [clfn] + metrics
 print(results_df)
-exit()
+#exit()
 
 results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-Score"])
 for clfl, clfn in zip(classifier_list, classifier_names):
