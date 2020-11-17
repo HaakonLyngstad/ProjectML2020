@@ -48,12 +48,18 @@ input_length_lstm = processed_data["LSTM"][0].shape[1]
 # AdaBoost decision tree
 dct = tree.DecisionTreeClassifier(max_depth=4, max_features="auto")
 
+# Bagging GridSearch
+parameters = {'n_estimators': (1, 2, 5),
+              'base_estimator__C': (1, 2, 5)}
+
 classifier_list = [naive_bayes.MultinomialNB(),
                    svm.SVC(),
                    ensemble.RandomForestClassifier(),
                    ensemble.AdaBoostClassifier(base_estimator=dct, n_estimators=10000, learning_rate=0.0045),
                    xgboost.XGBClassifier(),
-                   ensemble.BaggingClassifier(base_estimator = svm.SVC(), n_estimators=10),
+                   GridSearchCV(ensemble.BaggingClassifier(svm.SVC()),
+                                parameters,
+                                scoring="roc_auc"),
                    RCNN_model(input_length=input_length_rcnn,
                               EMBEDDING_DIM=EMBEDDING_DIM_RCNN,
                               MAX_NB_WORDS=MAX_NB_WORDS,
@@ -74,26 +80,23 @@ if os.path.exists(dir):
     shutil.rmtree(dir)
 os.makedirs(dir)
 
-results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-Score"])
+#results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-Score"])
 
-parameters = {'n_estimators': (1, 2),
-              'base_estimator__C': (1, 2)}
 
-clfn = "BG"
-(train_x, valid_x) = processed_data[clfn]
-metrics = train_model(
-    GridSearchCV(ensemble.BaggingClassifier(svm.SVC()),
-                 parameters,
-                 scoring="roc_auc"),
-    name=clfn,
-    train_x=train_x,
-    valid_x=valid_x,
-    train_y=train_y,
-    valid_y=valid_y
-)
-results_df.loc[len(results_df)] = [clfn] + metrics
-print(results_df)
-exit()
+
+#clfn = "BG"
+#(train_x, valid_x) = processed_data[clfn]
+#metrics = train_model(
+#    
+#    name=clfn,
+#    train_x=train_x,
+#    valid_x=valid_x,
+#    train_y=train_y,
+#    valid_y=valid_y
+#)
+#results_df.loc[len(results_df)] = [clfn] + metrics
+#print(results_df)
+#exit()
 
 results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-Score"])
 for clfl, clfn in zip(classifier_list, classifier_names):
@@ -106,6 +109,7 @@ for clfl, clfn in zip(classifier_list, classifier_names):
         train_y=train_y,
         valid_y=valid_y
     )
+    print(metrics)
     results_df.loc[len(results_df)] = [clfn] + metrics
     print(results_df)
 
