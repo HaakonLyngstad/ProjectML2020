@@ -1,10 +1,8 @@
 from sklearn.metrics import accuracy_score
 from sklearn.linear_model import LogisticRegression
 from keras.models import load_model
-from keras.utils import to_categorical
-import numpy as np
+from keras.wrappers.scikit_learn import KerasClassifier
 from numpy import dstack
-from stacked_generalizer import StackedGeneralizer
 from data_processing import get_processed_dataset_dict
 import pickle
 
@@ -15,6 +13,8 @@ def load_all_models(classifier_names):
         if clfn in ["RCNN", "LSTM"]:
             filename = f'models/{clfn}'
             model = load_model(filename)
+            # transform to scklearn model
+            model = KerasClassifier(model)
         else:
             filename = f'models/{clfn}.pickle'
             model = pickle.load(open(filename, 'rb'))
@@ -30,14 +30,6 @@ csvfile = "fake_job_postings_processed.csv"
 MAX_NB_WORDS = 50000
 MAX_SEQUENCE_LENGTH = 500
 
-base_models = load_all_models(classifier_names)
-
-# printing to check
-print(type(base_models))
-for i in range(len(base_models)):
-    print(type(base_models[i]))
-
-
 processed_data, train_y, valid_y = get_processed_dataset_dict(
     train_col=train_col,
     valid_col=valid_col,
@@ -45,29 +37,25 @@ processed_data, train_y, valid_y = get_processed_dataset_dict(
     MAX_NB_WORDS=MAX_NB_WORDS,
     MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
 
-(train_x, valid_x) = processed_data["NB"]
+#print(np.shape(train_y))
 
-print(train_x[0])
+(train_x, valid_x) = processed_data["NB"]
 
 # TODO: initialize base models
 
-stacking_model = LogisticRegression()
-sg = StackedGeneralizer(base_models, stacking_model, n_folds=5, verbose=True)
-sg.fit(train_x, train_y)
-pred = sg.predict(train_x)
-pred_classes = [np.argmax(p) for p in pred]
 
-_ = sg.evaluate(train_y, pred_classes)
-
-
-
-
-"""
 # create stacked model input dataset as outputs from the ensemble
-def stacked_dataset(members, inputX):
+def stacked_dataset(members, inputX, inputy):
     stackX = None
-    for model in members:
-        yhat = model.predict(inputX, verbose=0)
+    for model, clfn in zip(members, classifier_names):
+        print(model)
+        #yhat = model.predict(inputX, verbose=0)
+        #print(inputX)
+        # TODO: fix this 
+        if clfn in ["RCNN", "LSTM"]:
+            model.fit(inputX, inputy)
+        yhat = model.predict(inputX)
+        print(yhat, len(yhat))
         # stack predictions into [rows, members, probabilities]
         if stackX is None:
             stackX = yhat
@@ -81,7 +69,7 @@ def stacked_dataset(members, inputX):
 # fit a model based on the outputs from the ensemble members
 def fit_stacked_model(members, inputX, inputy):
     # create dataset using ensemble
-    stackedX = stacked_dataset(members, inputX)
+    stackedX = stacked_dataset(members, inputX, inputy)
     # fit standalone model
     model = LogisticRegression()
     model.fit(stackedX, inputy)
@@ -97,18 +85,20 @@ def stacked_prediction(members, model, inputX):
     return yhat
 
 
-n_members = 5
-members = load_all_models(n_members)
-print('Loaded %d models' % len(members))
+members = load_all_models(classifier_names)
+#print('Loaded %d models' % len(members))
 # evaluate standalone models on test dataset
-for model in members:
-    testy_enc = to_categorical(ytest)
-    _, acc = model.evaluate(xtest, testy_enc, verbose=0)
-    print('Model Accuracy: %.3f' % acc)
-# fit stacked model using the ensemble
-model = fit_stacked_model(members, xtest, ytest)
-# evaluate model on test set
-yhat = stacked_prediction(members, model, xtest)
-acc = accuracy_score(ytest, yhat)
-print('Stacked Test Accuracy: %.3f' % acc)
+
 """
+for model in members:
+    testy_enc = to_categorical(valid_y)
+    _, acc = model.evaluate(valid_x, testy_enc, verbose=0)
+    print('Model Accuracy: %.3f' % acc)
+"""
+
+# fit stacked model using the ensemble
+model = fit_stacked_model(members, valid_x, valid_y)
+# evaluate model on test set
+yhat = stacked_prediction(members, model, valid_x)
+acc = accuracy_score(valid_y, yhat)
+print('Stacked Test Accuracy: %.3f' % acc)

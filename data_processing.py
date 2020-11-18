@@ -80,16 +80,11 @@ def tokenize_text(train, test, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
 
 def data_processor(train_x, valid_x, train_col, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
     processed_data = dict()
-
-    processed_data["NB"] = count_vectors(train_x=train_x,
-                                         valid_x=valid_x,
-                                         train_col=train_col)
-    processed_data["SVM"] = tfid_vectors(train_x=train_x,
-                                         valid_x=valid_x,
-                                         train_col=train_col)
     ngram_vector = ngram_vectors(train_x=train_x,
                                  valid_x=valid_x,
                                  train_col=train_col)
+    processed_data["NB"] = ngram_vector
+    processed_data["SVM"] = ngram_vector
     processed_data["RFC"] = ngram_vector
     processed_data["ADA"] = ngram_vector
     processed_data["XGBC"] = ngram_vector
@@ -102,6 +97,8 @@ def data_processor(train_x, valid_x, train_col, MAX_NB_WORDS, MAX_SEQUENCE_LENGT
 
     processed_data["RCNN"] = tokenized_sequence
     processed_data["LSTM"] = tokenized_sequence
+    #processed_data["NB"] = tokenized_sequence
+    #processed_data["SVM"] = tokenized_sequence
 
     return processed_data
 

@@ -33,27 +33,5 @@ class LSTM_model:
         results = self.model.evaluate(valid_x, valid_y, batch_size=self.BATCH_SIZE)
         return results[1:]
 
-"""
-model = build_lstm()
-history = fit_lstm(epochs, batch_size)
-results = evaluate_lstm()
-
-
-# summarize history for loss
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'validation'], loc='upper left')
-plt.show()
-
-# summarize history for accuracy
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'validation'], loc='upper left')
-plt.show()
-"""
+    def predict(self, valid_x):
+        return self.model.predict(valid_x)

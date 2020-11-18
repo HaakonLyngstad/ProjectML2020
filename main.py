@@ -71,7 +71,7 @@ os.makedirs(dir)
 results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall"])
 for clfl, clfn in zip(classifier_list, classifier_names):
     (train_x, valid_x) = processed_data[clfn]
-    metrics = train_model(
+    metrics, _ = train_model(
         classifier=clfl,
         name=clfn,
         train_x=train_x,

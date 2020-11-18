@@ -54,3 +54,6 @@ class RCNN_model:
     def evaluate(self, valid_x, valid_y):
         results = self.model.evaluate(valid_x, valid_y, batch_size=self.BATCH_SIZE)
         return results[1:]
+
+    def predict(self, valid_x):
+        return self.model.predict(valid_x)
