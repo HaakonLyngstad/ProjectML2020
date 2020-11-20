@@ -23,9 +23,9 @@ def train_model(classifier, name, train_x, train_y, valid_x, valid_y):
         cm_cv.index.name = 'Actual'
         cm_cv.columns.name = 'Predicted'
         plt.figure(figsize=(10, 10))
-        sns.heatmap(cm_cv, cmap="Blues",annot=True, fmt='')
+        sns.heatmap(cm_cv, cmap="Blues", annot=True, fmt='')
         plt.show()
         return [metrics.accuracy_score(valid_y, predictions),
                 metrics.precision_score(valid_y, predictions, pos_label=1),
                 metrics.recall_score(valid_y, predictions, pos_label=1),
-                metrics.f1_score(valid_y, predictions, pos_label=0)]
+                metrics.f1_score(valid_y, predictions, pos_label=1)]

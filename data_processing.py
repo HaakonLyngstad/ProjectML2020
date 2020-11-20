@@ -7,6 +7,9 @@ from sklearn import model_selection
 import pandas
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
+from imblearn.under_sampling import RandomUnderSampler
+from imblearn.over_sampling import RandomOverSampler
+from imblearn.combine import SMOTETomek
 
 
 def import_dataset(filename):
@@ -117,6 +120,15 @@ def get_processed_dataset_dict(train_col,
     train_x, valid_x, train_y, valid_y = model_selection.train_test_split(
         df[train_col], df[valid_col], train_size=0.7, test_size=0.3, stratify=df[valid_col])
 
+    rus = RandomUnderSampler(0.1)
+    ros = RandomOverSampler(0.15)
+    train_x = train_x.to_numpy().reshape(-1, 1)
+    train_y = train_y.to_numpy().reshape(-1, 1)
+    train_x, train_y = rus.fit_sample(train_x, train_y)
+    train_x, train_y = ros.fit_sample(train_x, train_y)
+    train_x = pandas.Series(train_x.reshape(-1,))
+    train_y = pandas.Series(train_y.reshape(-1,))
+    print(train_y.value_counts())
     return (data_processor(train_x=train_x,
                            valid_x=valid_x,
                            train_col=df[train_col],
