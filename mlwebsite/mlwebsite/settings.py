@@ -118,7 +118,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = 'bootstrap'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = ''

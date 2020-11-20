@@ -18,11 +18,11 @@
 
     <style>
     body,h1 {font-family: "Raleway", sans-serif}
-    html {min-height: 100%; display: flex;}
+    html {height: 100%; display: flex;}
     body {flex: 1; padding-top: 50px;}
     </style>
     </head>
-    <body>
+    <body class="{% block body_class %}{% endblock %}">
         <header>
             <!-- Fixed navbar -->
             <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -36,16 +36,12 @@
                     <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                    <a class="nav-link" href="/predicate">Methods</a>
+                    <a class="nav-link" href="/methods">Methods</a>
                     </li>
                     <li class="nav-item">
                     <a class="nav-link" href="/support">Help us improve!</a>
                     </li>
                 </ul>
-                <form class="form-inline mt-2 mt-md-0">
-                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
                 </div>
             </nav>
         </header>

@@ -23,3 +23,7 @@ class DatasetForm(forms.ModelForm):
     class Meta:
         model = Dataset
         fields = ['title', 'comment', 'data_file']
+
+
+class PredictForm(forms.Form):
+    text = forms.CharField(label='Prediction text', widget=forms.Textarea, max_length=10000)

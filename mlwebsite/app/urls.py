@@ -1,10 +1,9 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from app import views
-from django.contrib import admin
 
 urlpatterns = [
     path('', views.main_view, name='homepage'),
-    path('predicate', views.predicate, name='predicate'),
+    path('methods', views.predicate, name='methods'),
     path('support', views.support, name='support'),
+    path('api/predict', views.api_predicate, name='api'),
 ]
