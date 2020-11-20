@@ -32,4 +32,12 @@ You should now be able to train your own models by running the "main.py" script 
 4. Write *python manage.py runserver* and go to http://127.0.0.1:8000/ in a browser
 5. You should now be able to access the website
 
+## Code style
 
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
+
+
+## License
+A short snippet describing the license (MIT, Apache etc)
+
+MIT © [Time_series_group_3]()
