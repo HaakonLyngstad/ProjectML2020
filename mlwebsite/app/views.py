@@ -23,6 +23,8 @@ def main_view(request):
 def predicate(request):
     return render(request, 'predicate.html')
 
+def methods(request):
+    return render(request, 'methods.html')
 
 def support(request):
     if request.method == 'POST':
@@ -44,3 +46,16 @@ def api_predicate(request):
         return JsonResponse({"fradulent": 0})
     else:
         return Http404()
+
+
+def bagging_view(request):
+    return render(request, 'bagging.html')
+
+
+def boosting_view(request):
+    return render(request, 'boosting.html')
+
+
+def stacking_view(request):
+    return render(request, 'stacking.html')
+

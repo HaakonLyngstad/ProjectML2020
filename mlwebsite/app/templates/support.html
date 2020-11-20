@@ -1,3 +1,6 @@
+<!doctype html>
+<html lang="en">
+
 {% extends "base.html" %}
 
 {% load crispy_forms_tags %}
@@ -50,43 +53,26 @@
                     <form method="post" action="{% url 'support' %}" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
                         {{ form|crispy }}
-                        <button type="submit" class="btn btn-success">Save person</button>
+                        <div style="text-align: center;">
+                          <button type="submit" class="btn btn-success">Submit data set</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
       </div>
       <div class="parallax__layer parallax__layer--base">
-        <div class="title">Base Layer</div>
+        <div class="title"></div>
       </div>
     </div>
 </div>
 
-<!-- 
-<div class="parallax_v1">
-    <div id="group1" class="parallax__group">
-        <div class="parallax__layer parallax__layer--base">
-            <div class="title">
-                BASE
-            </div>
-        </div>
-    </div>
-    <div id="group2" class="parallax__group">
-        <div class="parallax__layer parallax__layer--back">
-            asdasd
-        </div>
-        <div class="parallax__layer parallax__layer--base">
-            
-        </div>
-    </div>
-</div>
--->
-
 <script>
-    if ($(".alert")[0]){
+    if ($(".has-error")[0]){
       console.log("SCROLL")
-      $(".alert")[0].scrollIntoView()
+      $(".has-error")[0].scrollIntoView()
     }
+
 </script>
 
 {% endblock %}
