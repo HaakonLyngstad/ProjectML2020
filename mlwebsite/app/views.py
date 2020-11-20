@@ -27,12 +27,12 @@ def support(request):
         })
 
 
-def bagging_view(self):
+def bagging_view(request):
     return render(request, 'bagging.html')
 
-def boosting_view(self):
+def boosting_view(request):
     return render(request, 'boosting.html')
 
-def stacking_view(self):
-    return render(reequest, 'stacking.html')
+def stacking_view(request):
+    return render(request, 'stacking.html')
 
