@@ -152,11 +152,8 @@
     background-repeat: no-repeat;
     background-size: cover;
     /*following just for demo purposes to add height and top padding*/
-    height:180vh;
+    height:130vh;
     padding-top:20vh;
-}
-
-.parallax-curtain_v1{
 }
 
 .parallax-curtain_v2{
