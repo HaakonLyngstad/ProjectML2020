@@ -38,6 +38,6 @@ You should now be able to train your own models by running the "main.py" script 
 
 
 ## License
-A short snippet describing the license (MIT, Apache etc)
+This project is publicy available under the MIT license
 
 MIT © [Time_series_group_3]()
