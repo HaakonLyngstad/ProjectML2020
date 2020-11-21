@@ -3,6 +3,8 @@
 
 
 {% extends "base.html" %}
+{% load static%}
+{% block body_class %} my_new_body_css_class {% endblock %}
 
   <head>
     <title>Bootstrap Example</title>
@@ -24,7 +26,7 @@
                 <h1 class="w3-xlarge w3-center" style="color: #804000;"> 
                 Click on each to learn more! </h1>
                 <p class="w3-large w3-center" style="color:#1a0d00; margin-left: 40px; margin-right: 40px;">
-                When we train machine learning models, they often make several errors. 
+                When we train machine learning models (the decision maker), they often make several errors. 
                 In our case, this is because the english language is a language with 
                 extremely complex and large amounts of information. This information is easy for 
                 native speakers to understand, hard for beginners and very difficult for computers. 
@@ -60,7 +62,7 @@
                 </figure>
             </div>
 
-            <div class="col-md-2 d-flex jd ustify-content-center">
+            <div class="col-md-2 d-flex justify-content-center">
                 <figure class="snip1529 w3-animate-opacity">
                     <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/pr-sample13.jpg" alt="pr-sample13" />
                     <figcaption>

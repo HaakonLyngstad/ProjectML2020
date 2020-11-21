@@ -18,11 +18,11 @@
 
     <style>
     body,h1 {font-family: "Raleway", sans-serif}
-    html {min-height: 100%; display: flex;}
+    html {height: 100%; display: flex;}
     body {flex: 1; padding-top: 50px;}
     </style>
     </head>
-    <body>
+    <body class="{% block body_class %}{% endblock %}">
         <header>
             <!-- Fixed navbar -->
             <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
