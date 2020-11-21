@@ -59,3 +59,6 @@ def boosting_view(request):
 def stacking_view(request):
     return render(request, 'stacking.html')
 
+def classifier_view(request):
+    return render(request, 'classifiers.html')
+

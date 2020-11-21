@@ -9,4 +9,5 @@ urlpatterns = [
     path('bagging', views.bagging_view, name='bagging'),
     path('boosting', views.boosting_view, name='boosting'),
     path('stacking', views.stacking_view, name='stacking'),
+    path('classifiers', views.classifier_view, name='classifiers'),
 ]

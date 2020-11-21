@@ -141,6 +141,13 @@
   padding-top:40vh;
 }
 
+.methods_image {
+  background-image: url('https://www.w3schools.com/w3images/forestbridge.jpg');
+  min-height: 100%;
+  background-position: center;
+  background-size: cover;
+  }
+
 
 .parallax_v2 {
     /* The image used */
