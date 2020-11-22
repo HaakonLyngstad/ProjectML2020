@@ -146,6 +146,10 @@
   min-height: 100%;
   background-position: center;
   background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   }
 
 
@@ -318,3 +322,6 @@ padding:0;
 .btn-success {
   font-size: 100%;
 }
+
+html,body { height:100%; }
+

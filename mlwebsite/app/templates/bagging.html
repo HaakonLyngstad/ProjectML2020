@@ -3,6 +3,7 @@
 <head>
     <title>Bagging</title>
     <link rel="stylesheet" href="bagging.css">
+    
 </head>
 
 {% extends 'base.html' %}
@@ -12,13 +13,18 @@
 {% block body_class %} my_new_body_css_class {% endblock %}
 {% block content %}
 
+<style>
+html,body { height:100%; }
+
+</style>
+
 
 
 <body>
     <div class="methods_image">
-    <div class="w3-display-middle" style="border: 15px;">
-        <div class="w3-display-container w3-animate-opacity w3-text-white">
-            <div class="d-inline-block h-auto" style="width: 100%; padding: 20px; height: 300px; background-color: rgba(0,0,0,0.7);">
+    <div class="w3-display-middle " style="border: 15px; height: 100%;">
+        <div class="w3-display-container w3-animate-opacity w3-text-white" style="height: 100%;">
+            <div class="d-inline-block " style="width: 100%; position:relative; padding: 20px; height:100vh; background-color: rgba(0,0,0,0.7);">
             <h1 class="w3-jumbo w3-center">Bagging</h1>
 
             <p class="w3-medium w3-center">This is an Ensemble Method. You can learn more about ensemble methods
@@ -41,10 +47,16 @@
                 chance there would be some variation, but not much. 
               
             </p>
+            <img style="max-width: 100%;" src="/static/images/Ensemble_Bagging.svg.png" alt="Bagging image" />
+            <p class="w3-large w3-center">
+                The image here  
+              
+            </p>
             </div>
         </div>
     </div>
-    </div>
+
+    
 </body>
 
 
