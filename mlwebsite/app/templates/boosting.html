@@ -7,28 +7,46 @@
 
 {% block content %}
 
-<body>
-    <div class="methods_image">
-    <div class="w3-display-middle" style="border: 15px;">
-        <div class="w3-display-container w3-animate-opacity w3-text-white">
-            <div class="d-inline-block h-auto" style="width: 100%; padding: 20px; height: 300px; background-color: rgba(0,0,0,0.7);">
-            <h1 class="w3-jumbo w3-center">Boosting</h1>
+<style>
+html,body { height:100%; }
 
-            <p class="w3-medium w3-center">This is an Ensemble Method. You can learn more about ensemble methods
-            <a class="w3-medium w3-center" style="color:blue;" href="" >here!</a>
-            
-            <p class="w3-large w3-center">
-               INPUT TEXT HERE 
-            </p>
-            <h2 class="w3-xlarge w3-center">
-                
-            </h2>
-            <p class="w3-large w3-center">
-                
-            </p>
+</style>
+
+
+<body>
+    <div class="parallax_bagging">
+        <div class="w3-display-container">
+            <div class="w3-display-middle" style="border: 15px; height:100%;">
+                <div class="w3-display-container w3-animate-opacity w3-text-white">
+                    <div class="d-inline-block" style="width: 100%; padding: 20px; height: 100%; background-color: rgba(0,0,0,0.7);">
+                    <h1 class="w3-jumbo w3-center">Boosting</h1>
+
+                    <p class="w3-medium w3-center">This is an Ensemble Method. You can learn more about other ensemble methods
+                    <a class="w3-medium w3-center" style="color:blue;" href="bagging" >here</a> and
+                    <a class="w3-medium w3-center" style="color:blue;" href="stacking" >here!</a>
+                    </p>
+                    
+                    <p class="w3-large w3-center">
+                        The idea behind boosting is that models should be able to learn form one another. If you have
+                        read about bagging (if not click the first link above), you know that each model in the bagging method 
+                        learns on different data, but at the same time. They are trained in parallel. 
+                        <br>
+
+                        Boosting works sequentially, that is, one after the other. Each iteration they learn from the prevoius model
+                        by identifying what that model did wrong, and adjusting its metrics to prioritize getting right the last models mistakes.
+
+                    </p>
+                    <img style="max-width: 100%;" src="/static/images/Ensemble_Boosting.svg.png" alt="Boosting image" />
+                    <h2 class="w3-xlarge w3-center">
+                        
+                    </h2>
+                    <p class="w3-large w3-center">
+                        maybe this will help
+                    </p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 </body>
 
