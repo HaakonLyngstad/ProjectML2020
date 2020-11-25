@@ -22,7 +22,7 @@
     body {flex: 1; padding-top: 50px;}
     </style>
     </head>
-    <body class="{% block body_class %}{% endblock %}">
+    <body id="b1" class="{% block body_class %}{% endblock %}">
         <header>
             <!-- Fixed navbar -->
             <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -46,8 +46,20 @@
             </nav>
         </header>
 
+
         {% block content %}{% endblock content %}
 
 
     </body>
+    <script>
+        $(document).ready(function() {
+            var window_width = $(window).width();
+            console.log(window_width)
+            if( window_width <= 1100 ){
+                document.getElementById("b1").innerHTML = "This page is not adapted for mobile use or smaller screens. Please zoom out and reload the page";
+            } else if (window_width >= 2000) {
+                document.getElementById("b1").innerHTML = "This page is not adapted for larger screens. Please zoom in and reload the page";
+            }
+        })
+    </script>
 </html> 
