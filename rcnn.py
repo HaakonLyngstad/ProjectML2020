@@ -47,7 +47,7 @@ class RCNN_model:
         self.model = model
 
     def fit(self, train_x, train_y):
-        history = self.model.fit(train_x, train_y, epochs=self.EPOCH_SIZE, batch_size=self.BATCH_SIZE, validation_split=0.2, callbacks=[EarlyStopping(monitor='val_loss', patience=1, min_delta=0.0001)])
+        history = self.model.fit(train_x, train_y, epochs=self.EPOCH_SIZE, batch_size=self.BATCH_SIZE, validation_split=0.2, callbacks=[EarlyStopping(monitor='val_loss', patience=0, min_delta=0.0001)])
         self.history = history
         return history
 

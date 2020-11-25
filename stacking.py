@@ -14,11 +14,11 @@ MAX_NB_WORDS = 50000
 MAX_SEQUENCE_LENGTH = 500
 
 EMBEDDING_DIM_RCNN = 16
-RCNN_EPOCHS = 2
+RCNN_EPOCHS = 10
 RCNN_BATCH_SIZE = 128
 
 EMBEDDING_DIM_LSTM = 16
-LSTM_EPOCHS = 2
+LSTM_EPOCHS = 10
 LSTM_BATCH_SIZE = 128
 
 
@@ -91,8 +91,6 @@ def train_basemodels(basemodels, skf, processed_data, train_y, holdout_y):
         train_matrix.append(fold_pred)
 
         # train model on all 70% of training data, predict on 30%
-        # clf.fit(train_x, train_y)
-        # holdout_pred = clf.predict(holdout_x)
         _, holdout_pred = train_model(classifier=clf,
                                       name=clfn,
                                       train_x=train_x,
