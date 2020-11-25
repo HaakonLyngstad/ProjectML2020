@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block body_class %} my_new_body_css_class {% endblock %}
+{% block content %}
+
+<style>
+html,body { height:100%; }
+
+</style>
+
+
+
+<body>
+    <div class="parallax_bagging">
+        <div class="w3-display-container">
+            <div class="w3-display-middle " style="border: 15px; height:100%;">
+                <div class="w3-display-container w3-animate-opacity w3-text-white">
+                    <div class="d-inline-block " style="width: 100%; position:relative; padding: 20px; height:100%; background-color: rgba(0,0,0,0.7);">
+                    <h1 class="w3-jumbo w3-center">Bagging</h1>
+        
+                    <p class="w3-medium w3-center">This is an Ensemble Method. You can learn more about other ensemble methods
+                    <a class="w3-medium w3-center" style="color:blue;" href="boosting" >boosting</a> and
+                    <a class="w3-medium w3-center" style="color:blue;" href="stacking" >stacking</a> by clicking the links!
+                    </p>
+                    
+                    <p class="w3-large w3-center">
+                        One of the techniques we have used to increase the precision of our model predictions 
+                        is a method called bootstrap aggregation, or bagging for short. This method is split into two parts,
+                        bootstrapping and aggregating ("Aptly named this method is" - Yoda).
+                        The theory is quite simple: combining the predictions of many" weak" models will yield a
+                        on average more accurate prediction. We train a number of similar weak models, and use their average as 
+                        our final predictions. We call these models weak because we assume them to be worse than our bagging classifier.
+                    </p>
+                    <h2 class="w3-xlarge w3-center">
+                        Bootstrapping
+                    </h2>
+                    <p class="w3-large w3-center">
+                        Bootstrapping is a way to handle training data. If we trained all our sepereate models on 
+                        the same exact data, their faults would probably be pretty similar. Due to some elements of
+                        chance there would be some variation, but not much. Instead, what we do is create as many copies of our data 
+                        as we have models, and then we replace a small random part of the data with duplicates of data we already have
+                        in the data set. For example, if the original dataset was (1,2,3), a single dataset for each weak model in the classifier 
+                        could be (1,1,2), (2,3,3) and (3,3,1). 
+                    
+                    </p>
+                    <img style="max-width: 100%; background-color: rgba(240, 240, 240);" src="/static/images/Ensemble_Bagging.svg.png" alt="Bagging image" />
+                    <br>
+                    <br>
+                    <p class="w3-large w3-center">
+                        The image above illustrates bootstrapping of data and then assembling all classifiers to a single one. 
+                    </p>
+                    <h2 class="w3-xlarge w3-center">
+                        Aggregation
+                    </h2>
+                    <p class="w3-large w3-center">
+                        When all the weak models hav made trained and made predictions on their own version of the data,
+                        they are combined, for example by taking the average of all predictions and rounding to neares integer,
+                        or by majority vote. 
+                        <br>
+                        <br>
+                        There you have it! It (almost) isn't any more complicated than that!
+                    </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+
+{% endblock content%}
+
+</html>

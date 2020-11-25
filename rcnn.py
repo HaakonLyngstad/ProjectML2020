@@ -22,7 +22,7 @@ class RCNN_model:
 
         # Add the embedding Layer
         embedding_layer = layers.Embedding(input_dim=MAX_NB_WORDS, output_dim=EMBEDDING_DIM, input_length=input_length)(input_layer)
-        embedding_layer = layers.SpatialDropout1D(0.65)(embedding_layer)
+        embedding_layer = layers.SpatialDropout1D(0.25)(embedding_layer)
 
         # Add the recurrent layer
         rnn_layer = layers.Bidirectional(layers.GRU(50, return_sequences=True))(embedding_layer)
@@ -35,12 +35,12 @@ class RCNN_model:
 
         # Add the output Layers
         output_layer1 = layers.Dense(50, activation="relu")(pooling_layer)
-        output_layer1 = layers.Dropout(0.5)(output_layer1)
+        output_layer1 = layers.Dropout(0.2)(output_layer1)
         output_layer2 = layers.Dense(1, activation="sigmoid")(output_layer1)
 
         # Compile the model
         model = models.Model(inputs=input_layer, outputs=output_layer2)
-        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=["accuracy", Precision(), Recall()])
+        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[Precision(), Recall()])
 
         model.summary()
 
@@ -53,7 +53,9 @@ class RCNN_model:
 
     def evaluate(self, valid_x, valid_y):
         results = self.model.evaluate(valid_x, valid_y, batch_size=self.BATCH_SIZE)
-        return results[1:]
+        print(results)
+        return ["NaN"] + results[1:] + ["NaN"]
 
     def predict(self, valid_x):
         return self.model.predict(valid_x)
+        

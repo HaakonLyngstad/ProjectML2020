@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %} my_new_body_css_class {% endblock %}
+{% block content %}
+
+<body>
+    <div class="parallax_stacking">
+        <div class="w3-display-container">
+            <div class="w3-display-middle" style="border: 15px; height: 100%">
+                <div class="w3-display-container w3-animate-opacity w3-text-white">
+                    <div class="d-inline-block" style="width: 100%; position:relative; padding: 20px; height:100%; background-color: rgba(0,0,0,0.7);">
+
+                    <h1 class="w3-jumbo w3-center">Stacking</h1>
+
+                    <p class="w3-medium w3-center">This is an Ensemble Method. You can learn more about other ensemble methods
+                    <a class="w3-medium w3-center" style="color:blue;" href="bagging" >bagging</a> and
+                    <a class="w3-medium w3-center" style="color:blue;" href="boosting" >boosting</a> by clicking the links!
+                    </p>
+                    
+                    <p class="w3-large w3-center">
+                    Stacking is our main method, the one that gives the best results and makes most accurate best predictions.
+                    Stacking is also the most complicated ensemble method, as it uses multiple different base models.
+                    The base models we have used are explained on the 
+                    <a class="w3-medium w3-center" style="color:blue;" href="classifiers" >classifiers</a> page.
+                    <br>
+                    <br>
+                    Luckily, we don't have to understand how each of the classifiers work to understand stacking. 
+                    We have implemented stacking with something called k-fold validation, which we will explain first. 
+                    </p>
+
+                    <h2 class="w3-xlarge w3-center">
+                        K-fold validation
+                    </h2>
+                    <p class="w3-large w3-center">
+                        K-fold validation is a way to get a lot of training out of just a little bit of data. 
+                        The tecnique is designed so that all training data is used both to test and to train classifiers,
+                        without risking overfitting the models (overfitting is training a model to much to a specific data set,
+                        so that it performs poorly on new data). 
+                            <br>
+                            <br>
+                        K-fold is illustrated in the figure below. What it does in our case is using 75% of training data 
+                        to train a model to test/predict on the other 25%. Then it creates a new copy of the same model, and
+                        trains on another 75% of the data, testing on a new 25% part. After the model has made test predictions on 
+                        all the training data, its predictions is stored. We do this process for every classifier we use in the 
+                        stacing method.
+                    </p>
+                    <img style="max-width: 100%; margin-left:40px; background-color: rgba(240, 240, 240);" src="/static/images/k-fold.svg" alt="K-fold image" />
+                    
+                    <br>
+                    <br>
+                    <h2 class="w3-xlarge w3-center">
+                        Stacking
+                    </h2>
+                    <p class="w3-large w3-center">
+                        After the different classifiers have made predictions on all the training data, their predictions are saved
+                        and used as additional input for training the stacking classifier. This classifier, by knowing what each of the models
+                        predicted, end up outperforming the models in total, making for a overall better classifier. 
+                    </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+{% endblock content%}
+
+</html>

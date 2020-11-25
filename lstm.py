@@ -8,7 +8,7 @@ from keras.layers import SpatialDropout1D
 from keras.callbacks import EarlyStopping
 from tokenize_text import tokenize_text
 from keras.metrics import Precision, Recall
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 class LSTM_model:
     def __init__(self, input_length, EMBEDDING_DIM, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH, EPOCH_SIZE, BATCH_SIZE):
@@ -31,7 +31,7 @@ class LSTM_model:
 
     def evaluate(self, valid_x, valid_y):
         results = self.model.evaluate(valid_x, valid_y, batch_size=self.BATCH_SIZE)
-        return results[1:]
+        return results[1:] + ["NaN"]
 
     def predict(self, valid_x):
         return self.model.predict(valid_x)

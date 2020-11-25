@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block content %}
+<div class="parallax">
+    <div id="group1" class="parallax__group">
+      <div class="parallax__layer parallax__layer--base">
+        <div class="row" style="padding-top: 10%; height: 300px;">
+          <div class="col-md-6 offset-5" style="background-color: rgba(0, 0, 0, 0.7); color: white;">
+            <h1 style="text-align: center; font-weight: bold;">
+              Help us improve! 
+            </h1>
+            <p style="padding-top: 10px; font-size: 150%;">
+              Our machine learning model rely on large data sets to accuratly predict fradulent job postings. 
+              If you are using our platform to find fradulent job postings for a platform, please consider
+              uploading any data you have available so we can improve this model.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="group2" class="parallax__group">
+      <div class="parallax__layer parallax__layer--base">
+        <div class="row" style="padding-top: 10%; height: 300px;">
+          <div class="col-md-6 offset-1" style="background-color: rgba(0, 0, 0, 0.7); color: white;">
+            <h1 style="text-align: center; font-weight: bold;">
+              Format 
+            </h1>
+            <p style="padding-top: 10px; font-size: 150%;;">
+              The data must be submitted as an csv file containg two rows. The first row should be titled "text",
+              and contain a combination of the company description, the job description and the requirments for the job. 
+              The second column should be titled "fake", and contain information on wether the posting is fake or real.
+              Real announcements is to be annotaded with a 0, and fake ones with a 1 in this column.
+              For the form title, give the name of the company or page you represent. In the comments, give adequate 
+              contact info so that we can reach out for validation of your source. Thank you very much for conttibuting!
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="parallax__layer parallax__layer--back">
+      </div>
+    </div>
+    <div id="group3" class="parallax__group">
+      <div class="parallax__layer parallax__layer--fore">
+        <div class="row" style="height: 100%;">
+            <div class="col-md-6 offset-3 align-center" style="margin-top: 100px;">
+                <div class="upload-form">
+                    <form method="post" action="{% url 'support' %}" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div style="text-align: center;">
+                          <button type="submit" class="btn btn-success">Submit data set</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="parallax__layer parallax__layer--base">
+        <div class="title"></div>
+      </div>
+    </div>
+</div>
+
+<script>
+    if ($(".has-error")[0]){
+      console.log("SCROLL")
+      $(".has-error")[0].scrollIntoView()
+    }
+
+</script>
+
+{% endblock %}

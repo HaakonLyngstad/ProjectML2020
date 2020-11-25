@@ -1,1 +1,57 @@
-<h1> Hello world! </h1>
+<!doctype html>
+<html lang="en">
+
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block body_class %} my_new_body_css_class {% endblock %}
+{% block content %}
+    <div class="parallax_home">
+        <div class="w3-display-container w3-animate-opacity w3-text-white">
+            <div class="w3-display-middle">
+                <h1 class="w3-xxlarge w3-animate-top" style="text-align: center; font-size: 50%;">Improve your job posting service</h1>
+                <hr class="w3-border-grey" style="margin:auto;width:40%">
+                <p class="w3-large w3-center">Realiable fraud detection</p>
+            </div>
+        </div>
+        <div class="d-inline-block h-auto" style="width: 100%; height: 500px; padding: 20px; height: 300px; color: white; margin-top: 53vh; background-color: rgba(0,0,0,0.7);">
+            <div id="text" class="col-md-6 offset-3 h-100">
+                <p style="padding-top: 10px; font-size: 150%;">
+                    Our fraud detection algorithms allows you to minimize the fradulent job postings on your service. 
+                    Simply add the company descripton, the job descripton and the requirements as one text in the form bellow,
+                    and it quickly lets you know the nature of the posting. 
+                </p>
+                <p style="padding-top: 10px; font-size: 150%; font-style: italic;">
+                    Did you know: Our classification algorithms are also avaiable through an API, so you can easily integrate 
+                    the solution into your platform. Simply send a POST request to [domain_name]/api/predict with a JSON containing
+                    a "text" field containing the desired job posting on the same format as explained above.
+                </p>
+            </div>
+        </div>
+        <div class="d-inline-block h-auto" style="width: 100%; height: 500px; padding: 20px; height: 300px; color: white; margin-top: 5vh; background-color: rgba(0,0,0,0.0);">
+            <div class="col-md-6 offset-3 h-100">
+                <div class="upload-form" style="text-align: center;">
+                    <form method="post" action="{% url 'homepage' %}" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-success">Predicate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    $(window).load(function () {
+    //normally you'd wait for document.ready, but you'd likely to want to wait
+    //for images to load in case they reflow the page
+    $('body').delay(3000) //wait 5 seconds
+        .animate({
+            //animate jQuery's custom "scrollTop" style
+            //grab the value as the offset of #second from the top of the page
+            'scrollTop': $('#text').offset().top - 200
+        }, 500); //animate over 300ms, change this to however long you want it to animate for
+    });
+</script>
+{% endblock content %}

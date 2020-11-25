@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+
+
+{% extends "base.html" %}
+{% load static%}
+{% block body_class %} my_new_body_css_class {% endblock %}
+
+  <head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+
+{% block content %}
+    <!-- Container element -->
+    <div class="parallax_v2 w3-display-container w3-animate-opacity w3-text-white" style="padding-top: 50px;">
+        <div class="row">
+            <div class="col-md-8 offset-2 title-card w3-display-center" style="height: 300px;">
+                <h1 class="w3-xlarge w3-center" style="color: #804000; padding-top: 30px;"> 
+                These are the different methods our project uses.</h1>
+                <h1 class="w3-xlarge w3-center" style="color: #804000;"> 
+                Click on each to learn more! </h1>
+                <p class="w3-large w3-center" style="color:#1a0d00; margin-left: 40px; margin-right: 40px;">
+                When we train machine learning models (the decision maker), they often make several errors. 
+                In our case, this is because the english language is a language with 
+                extremely complex and large amounts of information. This information is easy for 
+                native speakers to understand, hard for beginners and very difficult for computers. 
+                We have broken down our approach to better working models in each section below, easily explained
+                so that you should understand most without prior knowledge of machine learning.
+                </p>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 50px; margin-bottom: 80px;">
+            <div class="col-md-2 offset-2 d-flex justify-content-center">
+                <figure class="snip1529 w3-animate-opacity">
+                    <img src="/static/images/Ensemble_Bagging.svg.png" alt="Bagging image" />
+                    <figcaption>
+                    <h3>Bagging</h3>
+                    <p>An explanation of prediciton using the bagging method</p>
+                    </figcaption>
+                    <div class="hover"><i class="ion-android-open"></i></div>
+                    <a href="/bagging"></a>
+                </figure>
+            </div>  
+
+               
+            <div class="col-md-2 d-flex justify-content-center">
+                <figure class="snip1529 w3-animate-opacity">
+                    <img src="/static/images/Ensemble_Boosting.svg.png" alt="Boosting image" />
+                    <figcaption>
+                      <h3>Boosting</h3>
+                      <p>An explanation of prediciton using the boosting method</p>
+                    </figcaption>
+                    <div class="hover"><i class="ion-android-open"></i></div>
+                    <a href="boosting"></a>
+                </figure>
+            </div>
+
+            <div class="col-md-2 d-flex justify-content-center">
+                <figure class="snip1529 w3-animate-opacity">
+                    <img src="/static/images/k-fold.svg" alt="stacking img" />
+                    <figcaption>
+                    <h3>Stacking</h3>
+                    <p>How we have implemented the stacking method to classify job postings</p>
+                    </figcaption>
+                    <div class="hover"><i class="ion-android-open"></i></div>
+                    <a href="stacking"></a>
+                </figure>
+            </div>
+
+            <div class="col-md-2 d-flex justify-content-center">
+                <figure class="snip1529 w3-animate-opacity">
+                    <img src="/static/images/nn_simple.png" alt="neural network" />
+                    <figcaption>
+                      <h3>Classifiers</h3>
+                      <p>The classifiers we use that are not ensemble methods.
+                      These classifiers are independent methods we use in our Stacking method.</p>
+
+                    </figcaption>
+                    <div class="hover"><i class="ion-android-open"></i></div>
+                    <a href="classifiers"></a>
+                </figure>
+                </div>
+        </div>
+        <div class="w3-display-container w3-animate-opacity w3-text-white" style="padding-top: 10px;">
+            <div class="row">
+                <div class="col-md-8 offset-2 title-card w3-display-center" style="height: 100px;">
+                    <p class="w-large w3-center" style="color:#1a0d00; margin-left: 60px; margin-right: 60px; margin-top:30px">
+                        Bagging, boosting and stacking are all part of something called Ensemble methods.
+                        You can read more about that here!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* Demo purposes only */
+        $(".hover").mouseleave(
+        function() {
+            $(this).removeClass("hover");
+        }
+        );
+    </script>
+{% endblock content %}
+
+
+</html>
