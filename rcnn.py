@@ -3,7 +3,7 @@ from keras import (
     models,
 )
 from keras.callbacks import EarlyStopping
-from keras.metrics import Precision, Recall
+from keras.metrics import Precision, Recall, Accuracy
 
 # This is fixed.
 EMBEDDING_DIM_RCNN = 200
@@ -40,7 +40,7 @@ class RCNN_model:
 
         # Compile the model
         model = models.Model(inputs=input_layer, outputs=output_layer2)
-        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[Precision(), Recall()])
+        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=["accuracy", Precision(), Recall()])
 
         model.summary()
 
@@ -54,7 +54,7 @@ class RCNN_model:
     def evaluate(self, valid_x, valid_y):
         results = self.model.evaluate(valid_x, valid_y, batch_size=self.BATCH_SIZE)
         print(results)
-        return ["NaN"] + results[1:] + ["NaN"]
+        return results[1:] + ["NaN"]
 
     def predict(self, valid_x):
         return self.model.predict(valid_x)
