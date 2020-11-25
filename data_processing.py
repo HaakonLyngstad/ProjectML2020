@@ -50,7 +50,7 @@ def ngram_vectors(train_x, valid_x, train_col):
     # ngram level tf-idf
     tfidf_vect_ngram = TfidfVectorizer(analyzer='word',
                                        token_pattern=r'\w{1,}',
-                                       ngram_range=(1, 2, 3),
+                                       ngram_range=(1, 3),
                                        max_features=5000)
     tfidf_vect_ngram.fit(train_col)
     train_x_ngram = tfidf_vect_ngram.transform(train_x)
