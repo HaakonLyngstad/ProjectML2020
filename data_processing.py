@@ -11,43 +11,12 @@ from imblearn.over_sampling import RandomOverSampler
 import pickle
 
 
-def import_dataset(filename):
-    col_list = ["title", "text"]
-    df = pandas.read_csv(filename, usecols=col_list, encoding="utf-8")
-    return df
-
-
-def get_dataframe(col_list, filename):
-    df = pandas.read_csv(filename, usecols=col_list, encoding="utf-8")
-    return df.drop_duplicates().sample(frac=1).reset_index(drop=True)
-
-
-def count_vectors(train_x, valid_x, train_col):
-    # transform the training and validation data using count vectorizer object
-    count_vect = CountVectorizer(analyzer='word',
-                                 token_pattern=r'\w{1,}')
-    count_vect.fit(train_col)
-
-    train_x_count = count_vect.transform(train_x)
-    valid_x_count = count_vect.transform(valid_x)
-
-    return (train_x_count, valid_x_count)
-
-
-def tfid_vectors(train_x, valid_x, train_col):
-    # word level tf-idf
-    tfidf_vect = TfidfVectorizer(analyzer='word',
-                                 token_pattern=r'\w{1,}',
-                                 max_features=5000)
-
-    tfidf_vect.fit(train_col)
-    train_x_tfid = tfidf_vect.transform(train_x)
-    valid_x_tfid = tfidf_vect.transform(valid_x)
-    return (train_x_tfid, valid_x_tfid)
-
-
 def ngram_vectors(train_x, valid_x, train_col):
-    # ngram level tf-idf
+    """
+    Takes the training and validation data, does a TF_IDF analysis on the data
+    using an n-gram range, and adapts the data based on this analysis.
+    Saves this vectorizer so it can be reused later.
+    """
     tfidf_vect_ngram = TfidfVectorizer(analyzer='word',
                                        token_pattern=r'\w{1,}',
                                        ngram_range=(1, 3),
@@ -61,20 +30,24 @@ def ngram_vectors(train_x, valid_x, train_col):
 
 
 def tokenize_text(train, test, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
+    """
+    Fits a tokenizer to the input data based on a max number of
+    tokenizable words. Uses this to create token sequences from the
+    texts, with an equal length created from padding.
+    Saves the tokenizer for future use.
+    """
 
     tokenizer = Tokenizer(num_words=MAX_NB_WORDS, lower=True)
     texts = train + test
 
     tokenizer.fit_on_texts(texts)
-    word_index = tokenizer.word_index
-
-    print('Found %s unique tokens.' % len(word_index))
 
     xtrain = tokenizer.texts_to_sequences(train)
     xtrain = pad_sequences(xtrain, maxlen=MAX_SEQUENCE_LENGTH)
 
     xtest = tokenizer.texts_to_sequences(test)
     xtest = pad_sequences(xtest, maxlen=MAX_SEQUENCE_LENGTH)
+
     with open('models/tokenize_vectorizer.pk', 'wb') as fin:
         pickle.dump(tokenizer, fin)
 
@@ -82,6 +55,10 @@ def tokenize_text(train, test, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
 
 
 def data_processor(train_x, valid_x, train_col, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
+    """
+    Uses the above declared functions to create an TF-IDF n-gram vector and a token vector,
+    and adds this to a dictionary for each of the machine learning models.
+    """
     processed_data = dict()
     ngram_vector = ngram_vectors(train_x=train_x,
                                  valid_x=valid_x,
@@ -104,11 +81,25 @@ def data_processor(train_x, valid_x, train_col, MAX_NB_WORDS, MAX_SEQUENCE_LENGT
     return processed_data
 
 
+def get_dataframe(col_list, filename):
+    """
+    Function to import preprocessed dataframe from a csv file.
+    """
+    df = pandas.read_csv(filename, usecols=col_list, encoding="utf-8")
+    return df.drop_duplicates().sample(frac=1).reset_index(drop=True)
+
+
 def get_processed_dataset_dict(train_col,
                                valid_col,
                                filename,
                                MAX_NB_WORDS,
                                MAX_SEQUENCE_LENGTH):
+    """
+    General function to create a dict of tokenized arrays 
+    for each of the machine learning algorithms. Also responsible 
+    for splitting the dataset, and resampling it.
+    """
+    
     # Import dataframe from csv
     cols = [train_col, valid_col]
     df = get_dataframe(col_list=cols, filename=filename)
