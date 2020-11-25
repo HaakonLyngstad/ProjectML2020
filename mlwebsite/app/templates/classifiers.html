@@ -8,27 +8,73 @@
 {% block content %}
 
 <body>
-    <div class="parallax_bagging">
+    <div class="parallax_classifiers">
         <div class="w3-display-container">
             <div class="w3-display-middle" style="border: 15px; height: 100%">
                 <div class="w3-display-container w3-animate-opacity w3-text-white">
-                    <div class="d-inline-block h-auto" style="width: 100%; padding: 20px; height: 100%; background-color: rgba(0,0,0,0.7);">
+                    <div class="d-inline-block" style="width: 100%; padding: 20px; height: 100%; background-color: rgba(0,0,0,0.7);">
 
                     <h1 class="w3-jumbo w3-center">Classifiers</h1>
 
                     <p class="w3-medium w3-center">These are the classifiers used in our Ensemble Method Stacking. 
                     You can learn more about stacking
-                    <a class="w3-medium w3-center" style="color:blue;" href="sacking" >here!</a></p>
+                    <a class="w3-medium w3-center" style="color:blue;" href="stacking" >here!</a></p>
                 
                     <p class="w3-large w3-center">
-                    These methods 
+                    
                     </p>
                     <h2 class="w3-xlarge w3-center">
-                        MultinominalNB
+                        Multinomial Naive Bayes
                     </h2>
                     <p class="w3-large w3-center">
-                        
+                        This method is often used in text classification, and we chose to use it as a 
+                        benchmark against the other methods. In addition it serves as valuable input in the 
+                        stacking classifier. It is built on something called a bayesian network, which is a learning 
+                        method too complicated to explain here, but in short it is a network of variables with conditional
+                        dependencies (eg. how A affects the likelihood of B). Our network is naive, meaning we expect all 
+                        variables to be independent (eg. wether A happens does not affect the likelihood of B). We use a 
+                        multinomial version of naive bayes as it is able to handle multiple data points of input.
                     </p>
+                    <h2 class="w3-xlarge w3-center">
+                        Support Vector Machines
+                    </h2>
+                    <p class="w3-large w3-center">
+                        Support vector machines handle data by adjusting each data point a specific weight, and prioritizing 
+                        all the data accordingly. 
+                    </p>
+                    <h1 class=" w3-center">
+                        Recurrent Neural Networks  
+                    </h1>
+                    <p class="w3-large w3-center">
+                        Recurrent neural networks is simply neural networks where data is run through the network several iterations.
+                        Neural networks are really complicated, but the core idea is to mimic how the brains synapses learn! 
+                    </p>
+                    <img style="max-width: 60%; position:relative; margin-left:125px; background-color: rgba(240, 240, 240);" src="/static/images/nn_simple.png" alt="neural network" />
+                    <p class="w3-large w3-center">
+                    Each node (circle) takes some information as input, does something with it, and passes it along to the next layer. This
+                    is also how synapses learn, tying themselves together and creating a "learned" method. 
+                    Most networks are much larger with more layers, but they more or less look similar to the pucture above.
+                    </p>
+                    <h2 class="w3-xlarge w3-center">
+                        LSTM
+                    </h2>
+                    <p class="w3-large w3-center">
+                        Long short-term memory, or LSTM, is a RNN with a special layer, that is able to store information
+                        over multiple iterations through the network (normal RNNs can't do this). Imagine a driver of a car, trying to
+                        find a specific place in a town. The driver stops and asks random people for advice on how to find where she
+                        wants to go. These people vary in familiarity with the city, so some advice is good and some advice is bad. 
+                        The driver has a tool for verifying good from bad information, and stores the good whilst discarding the bad. 
+
+                        Although this is an oversimplication, and not entirely accurate, this should non the less give you an idea of how
+                        the LSTM layer functions. 
+                    </p>
+                    <h2 class="w3-xlarge w3-center">
+                        RCNN
+                    </h2>
+                    <p class="w3-large w3-center">
+
+                    </p>
+
                     </div>
                 </div>
             </div>

@@ -15,7 +15,7 @@ html,body { height:100%; }
 
 
 <body>
-    <div class="parallax_bagging">
+    <div class="parallax_boosting">
         <div class="w3-display-container">
             <div class="w3-display-middle" style="border: 15px; height:100%;">
                 <div class="w3-display-container w3-animate-opacity w3-text-white">
@@ -23,8 +23,8 @@ html,body { height:100%; }
                     <h1 class="w3-jumbo w3-center">Boosting</h1>
 
                     <p class="w3-medium w3-center">This is an Ensemble Method. You can learn more about other ensemble methods
-                    <a class="w3-medium w3-center" style="color:blue;" href="bagging" >here</a> and
-                    <a class="w3-medium w3-center" style="color:blue;" href="stacking" >here!</a>
+                    <a class="w3-medium w3-center" style="color:blue;" href="bagging" >bagging</a> and
+                    <a class="w3-medium w3-center" style="color:blue;" href="stacking" >stacking</a> by clicking the links!
                     </p>
                     
                     <p class="w3-large w3-center">
@@ -32,17 +32,22 @@ html,body { height:100%; }
                         read about bagging (if not click the first link above), you know that each model in the bagging method 
                         learns on different data, but at the same time. They are trained in parallel. 
                         <br>
+                        <br>
 
                         Boosting works sequentially, that is, one after the other. Each iteration they learn from the prevoius model
                         by identifying what that model did wrong, and adjusting its metrics to prioritize getting right the last models mistakes.
+                        This is done by doing something called re-weighting, which is adjusting the importance of data points
+                        according to what should be in focus, and what should not.
 
                     </p>
-                    <img style="max-width: 100%;" src="/static/images/Ensemble_Boosting.svg.png" alt="Boosting image" />
-                    <h2 class="w3-xlarge w3-center">
-                        
-                    </h2>
+                    <img style="max-width: 100%; background-color: rgba(240, 240, 240);" src="/static/images/Ensemble_Boosting.svg.png" alt="Boosting image" />
+                    <a  href="https://en.wikipedia.org/wiki/File:Ensemble_Boosting.svg">Image source here</a>
+                    <br>
+                    <br>
                     <p class="w3-large w3-center">
-                        maybe this will help
+                        The image above illustrates how the boosting method works. You can se that some data is greyed
+                        out after the first iteration. This represents how some data is rendered "less important" 
+                        for the next classification. 
                     </p>
                     </div>
                 </div>
