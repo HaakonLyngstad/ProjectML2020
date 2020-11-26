@@ -30,8 +30,8 @@ def get_basemodels():
 
     classifier_list = [xgboost.XGBClassifier(max_depth=10,
                                              min_child_weight=1,
-                                             scale_pos_weight=2),  #penalizes error on minority
-                       RandomForestClassifier(max_depth=80,n_estimators=10),
+                                             scale_pos_weight=2),  # penalizes error on minority
+                       RandomForestClassifier(max_depth=80, n_estimators=10),
                        RCNN_model(input_length=MAX_SEQUENCE_LENGTH,
                                   EMBEDDING_DIM=EMBEDDING_DIM_RCNN,
                                   MAX_NB_WORDS=MAX_NB_WORDS,
@@ -55,10 +55,11 @@ def split_dataset():
     processed_data, train_y, holdout_y = get_processed_dataset_dict(
         train_col="text",
         valid_col="fake",
-        filename="fake_job_postings_processed.csv",
+        filename="mlwebsite/fake_job_postings_processed.csv",
         MAX_NB_WORDS=MAX_NB_WORDS,
         MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
     return processed_data, train_y, holdout_y
+
 
 # training all the basemodels
 def train_basemodels(basemodels, skf, processed_data, train_y, holdout_y):
@@ -98,12 +99,16 @@ def train_basemodels(basemodels, skf, processed_data, train_y, holdout_y):
         train_matrix.append(fold_pred)
 
         # train model on all 70% of training data, predict on 30% (holdout data)
-        _, holdout_pred = train_model(classifier=clf,
+        metrics, holdout_pred = train_model(classifier=clf,
                                       name=clfn,
                                       train_x=train_x,
                                       train_y=train_y,
                                       valid_x=holdout_x,
                                       valid_y=holdout_y)
+        
+        results_df.loc[len(results_df)] = [clfn] + metrics
+        print(results_df)
+        results_df.to_csv("models/k_fold_metrics.csv", index=False)
 
         holdout_matrix.append(holdout_pred)
     return train_matrix, holdout_matrix
@@ -141,7 +146,7 @@ def main():
 
     #metalearner = xgboost.XGBClassifier()
     # create a metalearner based on the k-fold predictions of the basemodels
-    metalearner = LogisticRegression(C=1, penalty='l1', solver='saga', warm_start=True)
+    metalearner = LogisticRegression(penalty='l1', solver='saga', warm_start=True)
     metalearner.fit(train_matrix, train_y)
 
     # predict the metalearner on the predictions from the basemodels on the holdout data
@@ -152,9 +157,11 @@ def main():
                f1_score(holdout_y, meta_pred, pos_label=1)]
 
     results_df = pd.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-score"])
-    results_df.loc[len(results_df)] = ["LogisticRegression"] + metrics
+    results_df.loc[len(results_df)] = ["Stack"] + metrics
     print(results_df)
     results_df.to_csv("models/stacking_metrics.csv", index=False)
+
+    return metrics
 
 
 if __name__ == '__main__':

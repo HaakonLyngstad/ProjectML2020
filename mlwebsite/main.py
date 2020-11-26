@@ -1,5 +1,6 @@
 from data_processing import get_processed_dataset_dict
 from training import train_model
+import stacking
 from lstm import LSTM_model
 from rcnn import RCNN_model
 from sklearn import (
@@ -17,23 +18,23 @@ import shutil
 
 train_col = "text"
 valid_col = "fake"
-filename = "fake_job_postings_processed.csv"
+filename = "mlwebsite/fake_job_postings_processed.csv"
 
 # This is fixed.
 EMBEDDING_DIM_LSTM = 16
 EMBEDDING_DIM_RCNN = 100
 
 # The maximum number of words to be used. (most frequent)
-MAX_NB_WORDS = 50000
+MAX_NB_WORDS = 2000
 
 # Max number of words in each text.
-MAX_SEQUENCE_LENGTH = 2000
+MAX_SEQUENCE_LENGTH = 500
 
 RCNN_EPOCHS = 10
-RCNN_BATCH_SIZE = 32
+RCNN_BATCH_SIZE = 128
 
-LSTM_EPOCHS = 8
-LSTM_BATCH_SIZE = 32
+LSTM_EPOCHS = 10
+LSTM_BATCH_SIZE = 128
 
 processed_data, train_y, valid_y = get_processed_dataset_dict(
     train_col=train_col,
@@ -62,36 +63,32 @@ param_grid_ADA = {
     'base_estimator__kernel': ["rbf", "poly", 'sigmoid', 'linear']
 }
 classifier_list = [
-    #naive_bayes.MultinomialNB(),
-    #svm.SVC(),
-    #ensemble.RandomForestClassifier(),
-    #GridSearchCV(ensemble.AdaBoostClassifier(svm.SVC(), algorithm="SAMME"),
-    #             param_grid=param_grid_ADA,
-    #             refit=True,
-    #             verbose=2),
-    #ensemble.AdaBoostClassifier(base_estimator=dct, n_estimators=10000, learning_rate=0.0045),
-    #xgboost.XGBClassifier(),
-    ensemble.BaggingClassifier(svm.SVC(C=10, gamma=1), n_estimators=300)
+    ensemble.RandomForestClassifier(max_depth=80, n_estimators=10),
+    #ensemble.AdaBoostClassifier(svm.SVC(kernel='linear'), algorithm="SAMME"),
+    ensemble.AdaBoostClassifier(base_estimator=dct, n_estimators=10000, learning_rate=0.0045),
+    xgboost.XGBClassifier(max_depth=10,
+                          min_child_weight=1,
+                          scale_pos_weight=2),
+    ensemble.BaggingClassifier(svm.SVC(C=10, gamma=1), n_estimators=100, verbose=True, n_jobs=-1),
     #GridSearchCV(ensemble.BaggingClassifier(svm.SVC()),
     #             param_grid=param_grid_BG,
     #             refit=True,
     #             verbose=2),
-    #LSTM_model(input_length=input_length_lstm,
-    #           EMBEDDING_DIM=EMBEDDING_DIM_LSTM,
-    #           MAX_NB_WORDS=MAX_NB_WORDS,
-    #           MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
-    #           EPOCH_SIZE=LSTM_EPOCHS,
-    #           BATCH_SIZE=LSTM_BATCH_SIZE),
-    #RCNN_model(input_length=input_length_rcnn,
-    #           EMBEDDING_DIM=EMBEDDING_DIM_RCNN,
-    #           MAX_NB_WORDS=MAX_NB_WORDS,
-    #           EPOCH_SIZE=RCNN_EPOCHS,
-    #           MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
-    #           BATCH_SIZE=RCNN_BATCH_SIZE)
+    LSTM_model(input_length=input_length_lstm,
+               EMBEDDING_DIM=EMBEDDING_DIM_LSTM,
+               MAX_NB_WORDS=MAX_NB_WORDS,
+               MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
+               EPOCH_SIZE=LSTM_EPOCHS,
+               BATCH_SIZE=LSTM_BATCH_SIZE),
+    RCNN_model(input_length=input_length_rcnn,
+               EMBEDDING_DIM=EMBEDDING_DIM_RCNN,
+               MAX_NB_WORDS=MAX_NB_WORDS,
+               EPOCH_SIZE=RCNN_EPOCHS,
+               MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
+               BATCH_SIZE=RCNN_BATCH_SIZE)
 ]
 
-classifier_names = ["BG"]
-#classifier_names = ["NB", "SVC", "RFC", "ADA", "XGBC", "BG", "LSTM", "RCNN"]
+classifier_names = ["RFC", "ADA", "XGBC", "BG", "LSTM", "RCNN"]
 
 dir = 'models'
 if os.path.exists(dir):
@@ -115,8 +112,10 @@ for clfl, clfn in zip(classifier_list, classifier_names):
     print(metrics)
     results_df.loc[len(results_df)] = [clfn] + metrics
     print([clfn] + metrics)
+stacking_metrics = stacking.main()
+results_df.loc[len(results_df)] = ['Stacking'] + stacking_metrics
 print(results_df)
 results_df.to_csv("models/metrics.csv", index=False)
 
-print(classifier_list[3].best_params_)
-print(classifier_list[5].best_params_)
+#print(classifier_list[3].best_params_)
+#print(classifier_list[5].best_params_)
