@@ -16,13 +16,14 @@
 
                     <h1 class="w3-jumbo w3-center">Classifiers</h1>
 
-                    <p class="w3-medium w3-center">These are the classifiers used in our Ensemble Method Stacking. 
+                    <p class="w3-medium w3-center">These are the classifiers other than bagging and boosting used in our Ensemble Method Stacking. 
                     You can learn more about stacking
                     <a class="w3-medium w3-center" style="color:blue;" href="stacking" >here!</a></p>
                 
                     <p class="w3-large w3-center">
                     
                     </p>
+                    <!--
                     <h2 class="w3-xlarge w3-center">
                         Multinomial Naive Bayes
                     </h2>
@@ -37,12 +38,14 @@
                     </p>
                     <br>
                     <br>
+                     -->
                     <h2 class="w3-xlarge w3-center">
                         Support Vector Machines
                     </h2>
                     <p class="w3-large w3-center">
                         Support vector machines handle data by adjusting each data point a specific weight, and prioritizing 
-                        all the data accordingly. 
+                        all the data accordingly. By weighting data that is significant more heavily, the support vector machine 
+                        attempts to find the separator that separates the two groups "the most". 
                     </p>
                     <br>
                     <br>
@@ -86,7 +89,16 @@
                         RCNN
                     </h2>
                     <p class="w3-large w3-center">
-                        Recurrent convolutional neural networks [RCNN] are 
+                        Recurrent convolutional neural networks [RCNN] are a recurrent version of convolutional 
+                        neural networks [CNN]. CNNs are most popular in image recognition, but are also used in text 
+                        classification. These are quite methematically advanced, and not really relevant to understand, 
+                        but the idea is this: The "convolutional layer(s)" transforms input data into output where it is easier to detect 
+                        and find patterns. The great advantage with CNNs is their ability for pattern recognition. When looking 
+                        for falsehoods in text, recognizing patterns is really helpful, so CNN is great for this!
+
+                        When this is done recurrently, the model is able to adapt to changes in the text (such as shift in tone, language etc.)
+                        and can better determine falsehoods.
+
                     </p>
 
                     </div>
