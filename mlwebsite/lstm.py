@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense, LSTM, Embedding
+from keras.layers import Dense, LSTM, Embedding, SpatialDropout1D
 from keras.callbacks import EarlyStopping
 from keras.metrics import Precision, Recall
 
