@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt
 
 train_col = "text"
 valid_col = "fake"
-filename = "mlwebsite/fake_job_postings_processed.csv"
+filename = "fake_job_postings_processed.csv"
 
 # The maximum number of words to be used. (most frequent)
 MAX_NB_WORDS = 2000
