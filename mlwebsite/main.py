@@ -42,7 +42,6 @@ processed_data, train_y, valid_y = get_processed_dataset_dict(
     MAX_NB_WORDS=MAX_NB_WORDS,
     MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
 
-exit()
 input_length_rcnn = processed_data["RCNN"][0].shape[1]
 input_length_lstm = processed_data["LSTM"][0].shape[1]
 
@@ -98,7 +97,7 @@ os.makedirs(dir)
 results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-Score"])
 for clfl, clfn in zip(classifier_list, classifier_names):
     (train_x, valid_x) = processed_data[clfn]
-    metrics = train_model(
+    metrics, _ = train_model(
         classifier=clfl,
         name=clfn,
         train_x=train_x,
@@ -109,7 +108,6 @@ for clfl, clfn in zip(classifier_list, classifier_names):
     print(metrics)
     results_df.loc[len(results_df)] = [clfn] + metrics
     print(results_df)
-
 print(results_df)
 results_df.to_csv("models/metrics.csv", index=False)
 
