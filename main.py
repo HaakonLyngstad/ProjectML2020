@@ -49,15 +49,18 @@ input_length_lstm = processed_data["LSTM"][0].shape[1]
 dct = tree.DecisionTreeClassifier(max_depth=4, max_features="auto")
 
 # Bagging GridSearch
-param_grid_BG = {'n_estimators': [50, 100, 500],
-                 'base_estimator__C': [1, 10, 100],
-                 'base_estimator__gamma': [0.001, 0.01, 1]}
+param_grid_BG = {'n_estimators': [5, 10],
+                 'base_estimator__C': [1],
+                 'base_estimator__gamma': [1]}
 
-param_grid_ADA = {'n_estimators': [50, 100, 500],
-                  'learning_rate': [0.2, 0.5, 1],
-                  'base_estimator__C': [1, 10, 100],
-                  'base_estimator__gamma': [0.001, 0.01, 1]}
+#param_grid_ADA = {'n_estimators': [10, 15],
+#                  'learning_rate': [0.2, 0.5],
+#                  'base_estimator__C': [1],
+#                  'base_estimator__gamma': [1]}
 
+param_grid_ADA = {
+    'base_estimator__kernel': ["rbf", "poly", 'sigmoid', 'linear']
+}
 classifier_list = [naive_bayes.MultinomialNB(),
                    svm.SVC(),
                    ensemble.RandomForestClassifier(),
@@ -67,10 +70,10 @@ classifier_list = [naive_bayes.MultinomialNB(),
                                 verbose=2),
                    #ensemble.AdaBoostClassifier(base_estimator=dct, n_estimators=10000, learning_rate=0.0045),
                    xgboost.XGBClassifier(),
-                   GridSearchCV(ensemble.BaggingClassifier(svm.SVC()),
-                                param_grid=param_grid_BG,
-                                refit=True,
-                                verbose=2),
+                   #GridSearchCV(ensemble.BaggingClassifier(svm.SVC()),
+                   #             param_grid=param_grid_BG,
+                   #             refit=True,
+                   #             verbose=2),
                    LSTM_model(input_length=input_length_lstm,
                               EMBEDDING_DIM=EMBEDDING_DIM_LSTM,
                               MAX_NB_WORDS=MAX_NB_WORDS,
@@ -94,7 +97,7 @@ os.makedirs(dir)
 results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-Score"])
 for clfl, clfn in zip(classifier_list, classifier_names):
     (train_x, valid_x) = processed_data[clfn]
-    metrics = train_model(
+    metrics, _ = train_model(
         classifier=clfl,
         name=clfn,
         train_x=train_x,
@@ -105,7 +108,6 @@ for clfl, clfn in zip(classifier_list, classifier_names):
     print(metrics)
     results_df.loc[len(results_df)] = [clfn] + metrics
     print(results_df)
-
 print(results_df)
 results_df.to_csv("models/metrics.csv", index=False)
 
