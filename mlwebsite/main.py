@@ -1,5 +1,6 @@
 from data_processing import get_processed_dataset_dict
 from training import train_model
+import stacking
 from lstm import LSTM_model
 from rcnn import RCNN_model
 from sklearn import (
@@ -19,7 +20,7 @@ valid_col = "fake"
 filename = "fake_job_postings_processed.csv"
 
 # The maximum number of words to be used. (most frequent)
-MAX_NB_WORDS = 50000
+MAX_NB_WORDS = 2000
 
 # Max number of words in each text.
 MAX_SEQUENCE_LENGTH = 500
