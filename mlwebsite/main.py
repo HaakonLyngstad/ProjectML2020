@@ -61,43 +61,50 @@ param_grid_BG = {'n_estimators': [5, 10],
 param_grid_ADA = {
     'base_estimator__kernel': ["rbf", "poly", 'sigmoid', 'linear']
 }
-classifier_list = [naive_bayes.MultinomialNB(),
-                   svm.SVC(),
-                   ensemble.RandomForestClassifier(),
-                   GridSearchCV(ensemble.AdaBoostClassifier(svm.SVC(), algorithm="SAMME"),
-                                param_grid=param_grid_ADA,
-                                refit=True,
-                                verbose=2),
-                   #ensemble.AdaBoostClassifier(base_estimator=dct, n_estimators=10000, learning_rate=0.0045),
-                   xgboost.XGBClassifier(),
-                   #GridSearchCV(ensemble.BaggingClassifier(svm.SVC()),
-                   #             param_grid=param_grid_BG,
-                   #             refit=True,
-                   #             verbose=2),
-                   LSTM_model(input_length=input_length_lstm,
-                              EMBEDDING_DIM=EMBEDDING_DIM_LSTM,
-                              MAX_NB_WORDS=MAX_NB_WORDS,
-                              MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
-                              EPOCH_SIZE=LSTM_EPOCHS,
-                              BATCH_SIZE=LSTM_BATCH_SIZE),
-                    RCNN_model(input_length=input_length_rcnn,
-                              EMBEDDING_DIM=EMBEDDING_DIM_RCNN,
-                              MAX_NB_WORDS=MAX_NB_WORDS,
-                              EPOCH_SIZE=RCNN_EPOCHS,
-                              MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
-                              BATCH_SIZE=RCNN_BATCH_SIZE)]
+classifier_list = [
+    #naive_bayes.MultinomialNB(),
+    #svm.SVC(),
+    #ensemble.RandomForestClassifier(),
+    #GridSearchCV(ensemble.AdaBoostClassifier(svm.SVC(), algorithm="SAMME"),
+    #             param_grid=param_grid_ADA,
+    #             refit=True,
+    #             verbose=2),
+    #ensemble.AdaBoostClassifier(base_estimator=dct, n_estimators=10000, learning_rate=0.0045),
+    #xgboost.XGBClassifier(),
+    ensemble.BaggingClassifier(svm.SVC(C=10, gamma=1), n_estimators=300)
+    #GridSearchCV(ensemble.BaggingClassifier(svm.SVC()),
+    #             param_grid=param_grid_BG,
+    #             refit=True,
+    #             verbose=2),
+    #LSTM_model(input_length=input_length_lstm,
+    #           EMBEDDING_DIM=EMBEDDING_DIM_LSTM,
+    #           MAX_NB_WORDS=MAX_NB_WORDS,
+    #           MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
+    #           EPOCH_SIZE=LSTM_EPOCHS,
+    #           BATCH_SIZE=LSTM_BATCH_SIZE),
+    #RCNN_model(input_length=input_length_rcnn,
+    #           EMBEDDING_DIM=EMBEDDING_DIM_RCNN,
+    #           MAX_NB_WORDS=MAX_NB_WORDS,
+    #           EPOCH_SIZE=RCNN_EPOCHS,
+    #           MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
+    #           BATCH_SIZE=RCNN_BATCH_SIZE)
+]
 
-classifier_names = ["NB", "SVC", "RFC", "ADA", "XGBC", "BG", "LSTM", "RCNN"]
+classifier_names = ["BG"]
+#classifier_names = ["NB", "SVC", "RFC", "ADA", "XGBC", "BG", "LSTM", "RCNN"]
 
 dir = 'models'
 if os.path.exists(dir):
     shutil.rmtree(dir)
 os.makedirs(dir)
 
+print("------- Initiating training -------")
+
 results_df = pandas.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-Score"])
 for clfl, clfn in zip(classifier_list, classifier_names):
     (train_x, valid_x) = processed_data[clfn]
-    metrics = train_model(
+    print(f"------- Training {clfn} -------")
+    metrics, _ = train_model(
         classifier=clfl,
         name=clfn,
         train_x=train_x,
@@ -107,8 +114,7 @@ for clfl, clfn in zip(classifier_list, classifier_names):
     )
     print(metrics)
     results_df.loc[len(results_df)] = [clfn] + metrics
-    print(results_df)
-
+    print([clfn] + metrics)
 print(results_df)
 results_df.to_csv("models/metrics.csv", index=False)
 

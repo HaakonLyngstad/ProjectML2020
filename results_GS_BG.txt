@@ -1,0 +1,6 @@
+[0.9815031608522594, 0.9172932330827067, 0.6421052631578947, 0.7554179566563467]
+  Classifier  Accuracy  Precision    Recall  F1-Score
+0         BG  0.981503   0.917293  0.642105  0.755418
+  Classifier  Accuracy  Precision    Recall  F1-Score
+0         BG  0.981503   0.917293  0.642105  0.755418
+{'base_estimator__C': 10, 'base_estimator__gamma': 1, 'n_estimators': 100}
