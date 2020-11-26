@@ -28,10 +28,18 @@ You should now be able to train your own models by running the "main.py" script 
 
 ### Setting up the Django website
 
+The website is an example of how a online fraud detection text classifier could be implemented in a real use case. It also explaines our methods in manner
+suited for individuals without prior knowledge and/or education on how the used machine learning models functions. 
+
 1. Make sure you are in the "mlwebsite" folder
 3. Write *python manage.py makemigrations* followed by *python manage.py migrate*.
 4. Write *python manage.py runserver* and go to http://127.0.0.1:8000/ in a browser
 5. You should now be able to access the website
+
+### Website presentation video
+
+If for some reason an interested party should find themselves unable to properly clone, install and run the website
+on their local machines, this repository also contains a short video showcasing the intended usage of the website. 
 
 ## Code style
 
