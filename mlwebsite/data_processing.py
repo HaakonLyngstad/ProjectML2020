@@ -62,12 +62,24 @@ def tokenize_text(train, test, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
     return xtrain, xtest
 
 
-def data_processor(train_x, valid_x, train_col, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
+def data_processor(train_x, valid_x,  train_col, MAX_NB_WORDS, MAX_SEQUENCE_LENGTH):
     """
     Uses the above declared functions to create an TF-IDF n-gram vector and a token vector,
     and adds this to a dictionary for each of the machine learning models.
     """
     processed_data = dict()
+    """
+    rus = RandomUnderSampler(0.05)
+    ros = RandomOverSampler(0.1)
+    train_x = train_x.to_numpy().reshape(-1, 1)
+    train_y = train_y.to_numpy().reshape(-1, 1)
+    train_x, train_y = rus.fit_sample(train_x, train_y)
+    train_x, train_y = ros.fit_sample(train_x, train_y)
+    train_x = pandas.Series(train_x.reshape(-1,))
+    train_y = pandas.Series(train_y.reshape(-1,))
+    print(train_y.value_counts())
+    """
+
     ngram_vector = ngram_vectors(train_x=train_x,
                                  valid_x=valid_x,
                                  train_col=train_col)
@@ -115,19 +127,6 @@ def get_processed_dataset_dict(train_col,
     # Split dataset into training and validation sets
     train_x, valid_x, train_y, valid_y = model_selection.train_test_split(
         df[train_col], df[valid_col], train_size=0.7, test_size=0.3, stratify=df[valid_col])
-
-    """
-    # Resampling the training data
-    rus = RandomUnderSampler(0.1)
-    ros = RandomOverSampler(0.15)
-    train_x = train_x.to_numpy().reshape(-1, 1)
-    train_y = train_y.to_numpy().reshape(-1, 1)
-    train_x, train_y = rus.fit_sample(train_x, train_y)
-    train_x, train_y = ros.fit_sample(train_x, train_y)
-    train_x = pandas.Series(train_x.reshape(-1,))
-    train_y = pandas.Series(train_y.reshape(-1,))
-    print(train_y.value_counts())
-    """
 
     return (data_processor(train_x=train_x,
                            valid_x=valid_x,
