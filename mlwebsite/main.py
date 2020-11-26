@@ -23,7 +23,7 @@ filename = "fake_job_postings_processed.csv"
 
 # This is fixed.
 EMBEDDING_DIM_LSTM = 16
-EMBEDDING_DIM_RCNN = 100
+EMBEDDING_DIM_RCNN = 16
 
 # The maximum number of words to be used. (most frequent)
 MAX_NB_WORDS = 50000
@@ -32,7 +32,7 @@ MAX_NB_WORDS = 50000
 MAX_SEQUENCE_LENGTH = 500
 
 RCNN_EPOCHS = 10
-RCNN_BATCH_SIZE = 64
+RCNN_BATCH_SIZE = 128
 
 LSTM_EPOCHS = 10
 LSTM_BATCH_SIZE = 128
@@ -58,21 +58,27 @@ classifier_list = [
     #ensemble.BaggingClassifier(svm.SVC(C=10, gamma=1, cache_size=10000), n_estimators=150, verbose=2, n_jobs=-1),
     #ensemble.RandomForestClassifier(),
     #xgboost.XGBClassifier(),
+    #ensemble.BaggingClassifier(svm.SVC(C=10, gamma=1), n_estimators=300)
+    #GridSearchCV(ensemble.BaggingClassifier(svm.SVC()),
+    #             param_grid=param_grid_BG,
+    #             refit=True,
+    #             verbose=2),
     LSTM_model(input_length=input_length_lstm,
                EMBEDDING_DIM=EMBEDDING_DIM_LSTM,
                MAX_NB_WORDS=MAX_NB_WORDS,
                MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
                EPOCH_SIZE=LSTM_EPOCHS,
                BATCH_SIZE=LSTM_BATCH_SIZE),
-    #RCNN_model(input_length=input_length_rcnn,
-    #           EMBEDDING_DIM=EMBEDDING_DIM_RCNN,
-    #           MAX_NB_WORDS=MAX_NB_WORDS,
-    #           EPOCH_SIZE=RCNN_EPOCHS,
-    #           MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
-    #           BATCH_SIZE=RCNN_BATCH_SIZE)
+    RCNN_model(input_length=input_length_rcnn,
+               EMBEDDING_DIM=EMBEDDING_DIM_RCNN,
+               MAX_NB_WORDS=MAX_NB_WORDS,
+               EPOCH_SIZE=RCNN_EPOCHS,
+               MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
+               BATCH_SIZE=RCNN_BATCH_SIZE)
 ]
 
-classifier_names = ["ADA", "LSTM"]#,  "BG", "RFC", "XGBC", "LSTM", "RCNN"]
+classifier_names = ["LSTM", "RCNN"]
+#classifier_names = ["NB", "SVC", "RFC", "ADA", "XGBC", "BG", "LSTM", "RCNN"]
 
 dir = 'models'
 if os.path.exists(dir):
