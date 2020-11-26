@@ -114,7 +114,7 @@ def train_basemodels(basemodels, skf, processed_data, train_y, holdout_y):
     return train_matrix, holdout_matrix
 
 
-def main():
+def stacking_classifier():
     basemodels = get_basemodels()
     processed_data, train_y, holdout_y = split_dataset()
     skf = StratifiedKFold(n_splits=5)
@@ -128,22 +128,6 @@ def main():
     train_matrix = np.transpose(train_matrix)
     holdout_matrix = np.transpose(holdout_matrix)
 
-    """
-    # gridsearchCV for LR
-    grid = {
-        'solver': ['saga', 'sag', 'liblinear'],
-        'penalty': ['l1','l2'],
-        'C': np.logspace(-3, 3, 7)
-    }
-
-    metalearner = GridSearchCV(LogisticRegression(), grid, cv=10)
-    metalearner.fit(train_matrix, train_y)
-
-    print(f'tuned hpyerparameters:{metalearner.best_params_}')
-
-    # best obtained hyperparameters:'C': 1.0, 'penalty': 'l1', 'solver': 'saga'
-    """
-
     #metalearner = xgboost.XGBClassifier()
     # create a metalearner based on the k-fold predictions of the basemodels
     metalearner = LogisticRegression(penalty='l1', solver='saga', warm_start=True)
@@ -156,13 +140,8 @@ def main():
                recall_score(holdout_y, meta_pred),
                f1_score(holdout_y, meta_pred, pos_label=1)]
 
-    results_df = pd.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-score"])
-    results_df.loc[len(results_df)] = ["Stack"] + metrics
-    print(results_df)
-    results_df.to_csv("models/stacking_metrics.csv", index=False)
-
     return metrics
 
 
 if __name__ == '__main__':
-    main()
+    stacking_classifier()

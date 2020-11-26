@@ -1,6 +1,5 @@
 from data_processing import get_processed_dataset_dict
 from training import train_model
-import stacking
 from lstm import LSTM_model
 from rcnn import RCNN_model
 from sklearn import (
@@ -14,13 +13,14 @@ import pandas
 import os
 import shutil
 from matplotlib import pyplot as plt
+from stacking import stacking_classifier
 
 train_col = "text"
 valid_col = "fake"
 filename = "fake_job_postings_processed.csv"
 
 # The maximum number of words to be used. (most frequent)
-MAX_NB_WORDS = 2000
+MAX_NB_WORDS = 50000
 
 # Max number of words in each text.
 MAX_SEQUENCE_LENGTH = 500
@@ -42,22 +42,29 @@ processed_data, train_y, valid_y = get_processed_dataset_dict(
     MAX_NB_WORDS=MAX_NB_WORDS,
     MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
 
+input_length_rcnn = processed_data["RCNN"][0].shape[1]
+input_length_lstm = processed_data["LSTM"][0].shape[1]
+
 dct = tree.DecisionTreeClassifier(max_depth=1)
 print("------- Loading classifiers ------")
 classifier_list = [
-    ensemble.AdaBoostClassifier(dct, n_estimators=350, learning_rate=0.5),
-    ensemble.BaggingClassifier(svm.SVC(C=10, gamma=1), n_estimators=100, n_jobs=-1),
-    ensemble.RandomForestClassifier(),
+    ensemble.AdaBoostClassifier(dct, n_estimators=500,
+                                learning_rate=0.5),
+    ensemble.BaggingClassifier(svm.SVC(C=10, gamma=1),
+                               n_estimators=100,
+                               n_jobs=-1),
+    ensemble.RandomForestClassifier(max_depth=80,
+                                    n_estimators=10),
     xgboost.XGBClassifier(max_depth=10,
                           min_child_weight=1,
                           scale_pos_weight=2),
-    LSTM_model(input_length=MAX_SEQUENCE_LENGTH,
+    LSTM_model(input_length=input_length_lstm,
                EMBEDDING_DIM=EMBEDDING_DIM_LSTM,
                MAX_NB_WORDS=MAX_NB_WORDS,
                MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
                EPOCH_SIZE=LSTM_EPOCHS,
                BATCH_SIZE=LSTM_BATCH_SIZE),
-    RCNN_model(input_length=MAX_SEQUENCE_LENGTH,
+    RCNN_model(input_length=input_length_rcnn,
                EMBEDDING_DIM=EMBEDDING_DIM_RCNN,
                MAX_NB_WORDS=MAX_NB_WORDS,
                EPOCH_SIZE=RCNN_EPOCHS,
@@ -86,9 +93,11 @@ for clfl, clfn in zip(classifier_list, classifier_names):
         valid_y=valid_y
     )
     results_df.loc[len(results_df)] = [clfn] + metrics
-    print([clfn] + metrics)
 
 print(results_df)
+
+metrics = stacking_classifier()
+results_df.loc[len(results_df)] = ["Stacking"] + metrics
 results_df.to_csv("models/metrics.csv", index=False)
 
 plot = results_df.plot.bar(x='Classifier', rot=0, title='Classifiers', figsize=(20, 10), fontsize=14)
