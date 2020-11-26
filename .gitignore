@@ -138,3 +138,5 @@ mlwebiste/media/
 /images
 .images/
 
+app/migrations/
+
