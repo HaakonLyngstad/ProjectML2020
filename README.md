@@ -11,7 +11,8 @@
 
 **NB! This is a guide for setting up on Windows. Other OS's (Linux and Mac) will have some other commands**
 
-This project requires that you have Python 3 installed on your device, and added as an environment variable
+This project requires that you have Python 3.6.8 installed on your device, and added as an environment variable. 
+Note: Other python version might be sufficient, but this has not been tested.
 
 1. Clone this repository to a location of your choosing on your device. 
   - This can be done in the coommand shell by writing *git clone https://github.com/HaakonLyngstad/ProjectML2020.git*
@@ -21,13 +22,13 @@ This project requires that you have Python 3 installed on your device, and added
 3. Write *virtualenv venv* to create a virtual environment
 4. Write *venv\Scripts\activate*. You should now be inside a virtual enviroment (look for the (vevn) mark to the left of you command line
 5. Install all required libraries with *pip install -r "requirements.txt"* - this can take a while
+6. cd into "mlwebsite"
 
 You should now be able to train your own models by running the "main.py" script (the one in the root of the repositry).
 
 ### Setting up the Django website
 
-1. Make sure you are in the root of the repository
-2. cd into "mlwebsite"
+1. Make sure you are in the "mlwebsite" folder
 3. Write *python manage.py makemigrations* followed by *python manage.py migrate*.
 4. Write *python manage.py runserver* and go to http://127.0.0.1:8000/ in a browser
 5. You should now be able to access the website
