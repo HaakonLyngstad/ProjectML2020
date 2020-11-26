@@ -29,12 +29,14 @@
                     <p class="w3-large w3-center">
                         This method is often used in text classification, and we chose to use it as a 
                         benchmark against the other methods. In addition it serves as valuable input in the 
-                        stacking classifier. It is built on something called a bayesian network, which is a learning 
+                        stacking classifier. It is built on something called a bayes' theorem, which is a statistical 
                         method too complicated to explain here, but in short it is a network of variables with conditional
                         dependencies (eg. how A affects the likelihood of B). Our network is naive, meaning we expect all 
                         variables to be independent (eg. wether A happens does not affect the likelihood of B). We use a 
                         multinomial version of naive bayes as it is able to handle multiple data points of input.
                     </p>
+                    <br>
+                    <br>
                     <h2 class="w3-xlarge w3-center">
                         Support Vector Machines
                     </h2>
@@ -42,19 +44,27 @@
                         Support vector machines handle data by adjusting each data point a specific weight, and prioritizing 
                         all the data accordingly. 
                     </p>
+                    <br>
+                    <br>
                     <h1 class=" w3-center">
                         Recurrent Neural Networks  
                     </h1>
                     <p class="w3-large w3-center">
                         Recurrent neural networks is simply neural networks where data is run through the network several iterations.
-                        Neural networks are really complicated, but the core idea is to mimic how the brains synapses learn! 
+                        Neural networks are really complicated, but the core idea is to mimic how the brains neurons learn! 
                     </p>
+                    <br>
+                    <br>
                     <img style="max-width: 60%; position:relative; margin-left:125px; background-color: rgba(240, 240, 240);" src="/static/images/nn_simple.png" alt="neural network" />
                     <p class="w3-large w3-center">
+                    <br>
+                
                     Each node (circle) takes some information as input, does something with it, and passes it along to the next layer. This
-                    is also how synapses learn, tying themselves together and creating a "learned" method. 
+                    is also how neurons learn, tying themselves together and creating a "learned" method. 
                     Most networks are much larger with more layers, but they more or less look similar to the pucture above.
                     </p>
+                    <br>
+                    <br>
                     <h2 class="w3-xlarge w3-center">
                         LSTM
                     </h2>
@@ -63,16 +73,20 @@
                         over multiple iterations through the network (normal RNNs can't do this). Imagine a driver of a car, trying to
                         find a specific place in a town. The driver stops and asks random people for advice on how to find where she
                         wants to go. These people vary in familiarity with the city, so some advice is good and some advice is bad. 
-                        The driver has a tool for verifying good from bad information, and stores the good whilst discarding the bad. 
+                        The driver has a tool for verifying good from bad information, and stores the good whilst discarding the bad. The 
+                        key takeaway here is that the driver is able to memorize, and not discard good information even though 
+                        new information comes along. This is the advantage of LSTM. 
 
                         Although this is an oversimplication, and not entirely accurate, this should non the less give you an idea of how
                         the LSTM layer functions. 
                     </p>
+                    <br>
+                    <br>
                     <h2 class="w3-xlarge w3-center">
                         RCNN
                     </h2>
                     <p class="w3-large w3-center">
-
+                        Recurrent convolutional neural networks [RCNN] are 
                     </p>
 
                     </div>
