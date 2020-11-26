@@ -132,7 +132,9 @@ dmypy.json
 .models
 /models
 
-mlwebiste/media/
+mlwebsite/media/
+mlwebsite/models/
+mlwebsite/models
 
 .images
 /images

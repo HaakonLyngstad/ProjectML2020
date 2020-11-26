@@ -113,10 +113,10 @@ def vizualise_data(df, text_col, valid_col):
     fig2.savefig('images/fake_wordcloud.pdf', format='pdf')
     plt.show()
 
-    plt.rcParams.update({'font.size': 16})
+    plt.rcParams.update({'font.size': 14})
 
     bar2 = plt.figure(figsize=(16, 9))
-    most_common_bi = get_top_text_ngrams(df[df[valid_col] == 0][text_col], 10, 2)
+    most_common_bi = get_top_text_ngrams(df[df[valid_col] == 0][text_col], 10, 3)
     most_common_bi = dict(most_common_bi)
     sns.barplot(x=list(most_common_bi.values()), y=list(most_common_bi.keys()))
     plt.yticks(rotation=45)
@@ -124,7 +124,7 @@ def vizualise_data(df, text_col, valid_col):
     plt.show()
 
     bar3 = plt.figure(figsize=(16, 9))
-    most_common_bi = get_top_text_ngrams(df[df[valid_col] == 1][text_col], 10, 2)
+    most_common_bi = get_top_text_ngrams(df[df[valid_col] == 1][text_col], 10, 3)
     most_common_bi = dict(most_common_bi)
     sns.barplot(x=list(most_common_bi.values()), y=list(most_common_bi.keys()))
     plt.yticks(rotation=45)
@@ -161,7 +161,7 @@ def preprocessing():
                             keep="first").reset_index(drop=True)
 
     columns = [train_col, valid_col]
-    index = range(0, len(df)
+    index = range(0, len(df))
 
     df_adapted = pandas.DataFrame(index=index, columns=columns)
 

@@ -25,12 +25,13 @@
                 <p style="padding-top: 10px; font-size: 150%; font-style: italic;">
                     Did you know: Our classification algorithms are also avaiable through an API, so you can easily integrate 
                     the solution into your platform. Simply send a POST request to [domain_name]/api/predict with a JSON containing
-                    a "text" field containing the desired job posting on the same format as explained above.
+                    a "text" field with the desired job posting on the same format as explained above. {"text": "This is the job posting text"}
                 </p>
             </div>
         </div>
         <div class="d-inline-block h-auto" style="width: 100%; height: 500px; padding: 20px; height: 300px; color: white; margin-top: 5vh; background-color: rgba(0,0,0,0.0);">
             <div class="col-md-6 offset-3 h-100">
+                {% if show_form %}
                 <div class="upload-form" style="text-align: center;">
                     <form method="post" action="{% url 'homepage' %}" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
@@ -38,10 +39,24 @@
                         <button type="submit" class="btn btn-success">Predicate</button>
                     </form>
                 </div>
+                {% else%}
+                <div id="result" style="text-align: center; background-color: rgba(0,0,0,0.7);">
+                    {% if result == 0 %}
+                    <p style="padding-top: 10px; height: 100%; width: 100%; font-size: 150%;">
+                        Our algorithm could not finds traces of fraudulent intent your sumbitted posting.
+                    </p>
+                    {% else %}
+                    <p style="padding-top: 10px; height: 100%; width: 100%; font-size: 150%;">
+                        This text is assumed to be fraudulent. Please note that this is not foolproof, and our 
+                        prediction methods are based on the available data.
+                    </p>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
-
+{% if request.method != "POST" %}
 <script>
     $(window).load(function () {
     //normally you'd wait for document.ready, but you'd likely to want to wait
@@ -54,4 +69,14 @@
         }, 500); //animate over 300ms, change this to however long you want it to animate for
     });
 </script>
+{% else %}
+<script>
+    console.log($("#result"))
+    if ($("#result")[0]){
+      $("#result")[0].scrollIntoView({ behavior: 'auto', block: 'center' })
+    }
+</script>
+{% endif %}
+
+
 {% endblock content %}

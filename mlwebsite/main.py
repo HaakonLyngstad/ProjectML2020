@@ -42,6 +42,7 @@ processed_data, train_y, valid_y = get_processed_dataset_dict(
     MAX_NB_WORDS=MAX_NB_WORDS,
     MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
 
+exit()
 input_length_rcnn = processed_data["RCNN"][0].shape[1]
 input_length_lstm = processed_data["LSTM"][0].shape[1]
 
