@@ -3,7 +3,6 @@ import numpy as np
 import pickle
 
 
-
 def train_model(classifier, name, train_x, train_y, valid_x, valid_y):
     """
     Fits each machine learning model to the training data, then saves the model
@@ -12,7 +11,6 @@ def train_model(classifier, name, train_x, train_y, valid_x, valid_y):
     """
     if name in ["RCNN", "LSTM"]:
         classifier.fit(train_x, train_y)
-
         classifier.model.save('models/' + name)
         output = classifier.predict(valid_x)
         results = classifier.evaluate(valid_x, valid_y)

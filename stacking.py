@@ -1,5 +1,5 @@
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
 from sklearn.ensemble import RandomForestClassifier
 from training import train_model
@@ -23,14 +23,15 @@ LSTM_EPOCHS = 10
 LSTM_BATCH_SIZE = 128
 
 
-# gather models with optimized hyperparameters into a basemodels array
+# gather models with optimized hyperparameters into a basemodels dictionary
 def get_basemodels():
     basemodels = {}
-    #classifier_names = ["NB", "SVM", "RCNN", "LSTM"]
     classifier_names = ["XGBC", "RFC", "RCNN", "LSTM"]
 
-    classifier_list = [xgboost.XGBClassifier(),
-                       RandomForestClassifier(),
+    classifier_list = [xgboost.XGBClassifier(max_depth=10,
+                                             min_child_weight=1,
+                                             scale_pos_weight=2),  #penalizes error on minority
+                       RandomForestClassifier(max_depth=80,n_estimators=10),
                        RCNN_model(input_length=MAX_SEQUENCE_LENGTH,
                                   EMBEDDING_DIM=EMBEDDING_DIM_RCNN,
                                   MAX_NB_WORDS=MAX_NB_WORDS,
@@ -59,7 +60,7 @@ def split_dataset():
         MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
     return processed_data, train_y, holdout_y
 
-
+# training all the basemodels
 def train_basemodels(basemodels, skf, processed_data, train_y, holdout_y):
     train_matrix = []
     holdout_matrix = []
@@ -67,6 +68,8 @@ def train_basemodels(basemodels, skf, processed_data, train_y, holdout_y):
     for clfn, clf in basemodels.items():
         print(f'Training {clfn}...')
         fold_pred = []
+
+        #k-fold crossvalidation with i folds for each classifier in basemodels
         for i, (train_index, test_index) in enumerate(skf.split(processed_data[clfn][0], train_y)):
 
             # train_x and holdout_x is from the total data
@@ -94,7 +97,7 @@ def train_basemodels(basemodels, skf, processed_data, train_y, holdout_y):
         # add the predictions from the classifier to the training matrix
         train_matrix.append(fold_pred)
 
-        # train model on all 70% of training data, predict on 30%
+        # train model on all 70% of training data, predict on 30% (holdout data)
         _, holdout_pred = train_model(classifier=clf,
                                       name=clfn,
                                       train_x=train_x,
@@ -120,9 +123,28 @@ def main():
     train_matrix = np.transpose(train_matrix)
     holdout_matrix = np.transpose(holdout_matrix)
 
-    metalearner = LogisticRegression()
+    """
+    # gridsearchCV for LR
+    grid = {
+        'solver': ['saga', 'sag', 'liblinear'],
+        'penalty': ['l1','l2'],
+        'C': np.logspace(-3, 3, 7)
+    }
+
+    metalearner = GridSearchCV(LogisticRegression(), grid, cv=10)
     metalearner.fit(train_matrix, train_y)
 
+    print(f'tuned hpyerparameters:{metalearner.best_params_}')
+
+    # best obtained hyperparameters:'C': 1.0, 'penalty': 'l1', 'solver': 'saga'
+    """
+
+    #metalearner = xgboost.XGBClassifier()
+    # create a metalearner based on the k-fold predictions of the basemodels
+    metalearner = LogisticRegression(C=1, penalty='l1', solver='saga', warm_start=True)
+    metalearner.fit(train_matrix, train_y)
+
+    # predict the metalearner on the predictions from the basemodels on the holdout data
     meta_pred = metalearner.predict(holdout_matrix)
     metrics = [accuracy_score(holdout_y, meta_pred),
                precision_score(holdout_y, meta_pred),
@@ -132,6 +154,7 @@ def main():
     results_df = pd.DataFrame(columns=["Classifier", "Accuracy", "Precision", "Recall", "F1-score"])
     results_df.loc[len(results_df)] = ["LogisticRegression"] + metrics
     print(results_df)
+    results_df.to_csv("models/stacking_metrics.csv", index=False)
 
 
 if __name__ == '__main__':

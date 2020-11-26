@@ -64,7 +64,7 @@ def data_processor(train_x, valid_x, train_col, MAX_NB_WORDS, MAX_SEQUENCE_LENGT
                                  valid_x=valid_x,
                                  train_col=train_col)
     processed_data["NB"] = ngram_vector
-    processed_data["SVM"] = ngram_vector
+    processed_data["SVC"] = ngram_vector
     processed_data["RFC"] = ngram_vector
     processed_data["ADA"] = ngram_vector
     processed_data["XGBC"] = ngram_vector

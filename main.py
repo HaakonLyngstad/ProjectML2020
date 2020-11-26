@@ -10,6 +10,7 @@ from sklearn import (
 from sklearn.model_selection import GridSearchCV
 from sklearn import ensemble
 import xgboost
+import numpy as np
 import pandas
 import os
 import shutil
@@ -61,14 +62,28 @@ param_grid_BG = {'n_estimators': [5, 10],
 param_grid_ADA = {
     'base_estimator__kernel': ["rbf", "poly", 'sigmoid', 'linear']
 }
-classifier_list = [naive_bayes.MultinomialNB(),
-                   svm.SVC(),
-                   ensemble.RandomForestClassifier(),
+
+
+"""
+param_grid_rfc = {
+    'n_estimators'      : [10],
+    'max_depth'         : [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    'random_state'      : [0],
+    #'max_features': ['auto'],
+    #'criterion' :['gini']
+}
+
                    GridSearchCV(ensemble.AdaBoostClassifier(svm.SVC(), algorithm="SAMME"),
                                 param_grid=param_grid_ADA,
                                 refit=True,
                                 verbose=2),
-                   #ensemble.AdaBoostClassifier(base_estimator=dct, n_estimators=10000, learning_rate=0.0045),
+"""
+
+classifier_list = [naive_bayes.MultinomialNB(),
+                   svm.SVC(),
+                   ensemble.RandomForestClassifier(),
+
+                   ensemble.AdaBoostClassifier(base_estimator=dct, n_estimators=10000, learning_rate=0.0045),
                    xgboost.XGBClassifier(),
                    #GridSearchCV(ensemble.BaggingClassifier(svm.SVC()),
                    #             param_grid=param_grid_BG,
@@ -87,7 +102,15 @@ classifier_list = [naive_bayes.MultinomialNB(),
                               MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH,
                               BATCH_SIZE=RCNN_BATCH_SIZE)]
 
-classifier_names = ["NB", "SVC", "RFC", "ADA", "XGBC", "BG", "LSTM", "RCNN"]
+classifier_names = ["NB", "SVC", "RFC", "ADA", "XGBC", "LSTM", "RCNN"]
+
+
+#classifier_list = [GridSearchCV(ensemble.RandomForestClassifier(),
+                                #param_grid=param_grid_rfc,
+                                #refit=True,
+                                #verbose=2)]
+#classifier_names = ["RFC"]
+
 
 dir = 'models'
 if os.path.exists(dir):
@@ -111,5 +134,7 @@ for clfl, clfn in zip(classifier_list, classifier_names):
 print(results_df)
 results_df.to_csv("models/metrics.csv", index=False)
 
-print(classifier_list[3].best_params_)
-print(classifier_list[5].best_params_)
+#print(classifier_list[3].best_params_)
+#print(classifier_list[5].best_params_)
+
+#print(classifier_list[0].best_params_)
