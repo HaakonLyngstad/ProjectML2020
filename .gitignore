@@ -140,3 +140,5 @@ mlwebsite/models
 /images
 .images/
 
+app/migrations/
+
