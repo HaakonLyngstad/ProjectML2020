@@ -8,12 +8,6 @@ from wordcloud import WordCloud, STOPWORDS
 from sklearn.feature_extraction.text import CountVectorizer
 
 
-def import_dataset(filename):
-    col_list = ["company_profile", "description", "requirements", "fraudulent"]
-    df = pandas.read_csv(filename, usecols=col_list)
-    return df
-
-
 def init_stopword():
     stop = set(stopwords.words('english'))
     punctuation = list(string.punctuation)
@@ -21,12 +15,10 @@ def init_stopword():
     return stop
 
 
-# Removing the square brackets
 def remove_between_square_brackets(text):
     return re.sub('\[[^]]*\]', '', text)
 
 
-# Removing URL's
 def remove_url(text):
     text = re.sub(r'#URL+', '', text)
     return re.sub(r'http\S+', '', text)
@@ -42,6 +34,11 @@ def remove_multiple_spaces(text):
 
 # Remove stopwords
 def remove_stopwords(text, stop):
+    """
+    Removel all stopwords from a text string (it, the, etc.),
+    i.e. words that dont contibute meaning to the machine learning algorithms.
+    Based on a stopword list from the nltk package.
+    """
     text_adapted = []
     for i in text.split():
         if i.strip().lower() not in stop:
@@ -51,6 +48,10 @@ def remove_stopwords(text, stop):
 
 # Collection function for text denoising
 def remove_noise(text, stop):
+    """
+    Noise removal function. A collection function to perform all functions 
+    declared above.
+    """
     text = remove_between_square_brackets(text)
     text = remove_url(text)
     text = remove_special_characters(text)
@@ -62,15 +63,20 @@ def remove_noise(text, stop):
     return remove_stopwords(text, stop)
 
 
-def switch_num(valid):
-    if valid == 1:
-        return 0
-    else:
-        return 1
+def import_dataset(filename):
+    """
+    Imports the preset columns of our datasat into a dataframe.
+    """
+    col_list = ["company_profile", "description", "requirements", "fraudulent"]
+    df = pandas.read_csv(filename, usecols=col_list)
+    return df
 
 
 # ngrams function for data visualization
 def get_top_text_ngrams(corpus, n, g):
+    """
+    Finds the n-grams for a given corpus
+    """
     vec = CountVectorizer(ngram_range=(g, g)).fit(corpus)
     bag_of_words = vec.transform(corpus)
     sum_words = bag_of_words.sum(axis=0) 
@@ -80,21 +86,20 @@ def get_top_text_ngrams(corpus, n, g):
 
 
 def vizualise_data(df, text_col, valid_col):
-
-    print((df[valid_col] == 1).sum())
+    """
+    Function for creating visualizations of the processed dataset.
+    Creates a bar graph plotting fradulent and real data,
+    separete word clouds for the real and fradulent data 
+    and bigrams for the real and fradulent data.
+    """
     sns.set_style("white")
     countplot = sns.countplot(df[valid_col])
     bar1 = countplot.get_figure()
     bar1.savefig('images/valid_bar.pdf', format='pdf')
     plt.show()
-    print("---------------- NaN rows ----------------")
-    print(df.isna().sum())
-   
-    print("\n\n---------------- Count ----------------")
-    print(df[text_col].count())
 
     sns.set_style("dark")
-    fig1 = plt.figure(figsize=(20, 20))  # Text that is not Fake
+    fig1 = plt.figure(figsize=(20, 20))
     wc = WordCloud(max_words=100, width=1000, height=600, stopwords=STOPWORDS, background_color="white").generate(" ".join(df[df[valid_col] == 1][text_col]))
     plt.imshow(wc, interpolation='bilinear')
     plt.grid(False)
@@ -108,10 +113,10 @@ def vizualise_data(df, text_col, valid_col):
     fig2.savefig('images/fake_wordcloud.pdf', format='pdf')
     plt.show()
 
-    plt.rcParams.update({'font.size': 16})
+    plt.rcParams.update({'font.size': 14})
 
     bar2 = plt.figure(figsize=(16, 9))
-    most_common_bi = get_top_text_ngrams(df[df[valid_col] == 0][text_col], 10, 2)
+    most_common_bi = get_top_text_ngrams(df[df[valid_col] == 0][text_col], 10, 3)
     most_common_bi = dict(most_common_bi)
     sns.barplot(x=list(most_common_bi.values()), y=list(most_common_bi.keys()))
     plt.yticks(rotation=45)
@@ -119,7 +124,7 @@ def vizualise_data(df, text_col, valid_col):
     plt.show()
 
     bar3 = plt.figure(figsize=(16, 9))
-    most_common_bi = get_top_text_ngrams(df[df[valid_col] == 1][text_col], 10, 2)
+    most_common_bi = get_top_text_ngrams(df[df[valid_col] == 1][text_col], 10, 3)
     most_common_bi = dict(most_common_bi)
     sns.barplot(x=list(most_common_bi.values()), y=list(most_common_bi.keys()))
     plt.yticks(rotation=45)
@@ -127,31 +132,53 @@ def vizualise_data(df, text_col, valid_col):
     plt.show()
 
 
-df = import_dataset('fake_job_postings.csv')
+def preprocessing():
+    """
+    General function for preprocessing of data.
+    The function:
 
-train_col = "text"
-valid_col = "fake"
+    -loads the original dataset
+    -Removes duplicates
+    -Adds the three desired columns from the original data set into a single column
+        in a new dataframe
+    -Removes noise such as stopwords
+    -Saves the new dataframe to a csv formated file
+    -Visualizes the dataset
 
-print(df.loc[[1]])
-print(df.isnull().sum().sum())
-df1 = df.drop_duplicates(subset=["description", "requirements"], keep="first").reset_index(drop=True)
-columns = [train_col, valid_col]
-print(len(df1))
-index = range(0, len(df1))
-df_adapted = pandas.DataFrame(index=index, columns=columns)
+    Variables:
+    - df: old dataframe
+    - train_col: name of coloumn containing text data in new datframe
+    - valid_col: name of column containing binary information in new dataframe
+    - df_adapted: New dataframe with processed data
+    """
 
-for index, row in df1.iterrows():
-    row = row.copy()
-    new_text = str(row["company_profile"]) + str(row["description"]) + str(row["requirements"])
-    df_adapted.loc[index, train_col] = new_text
-    df_adapted.loc[index, valid_col] = row["fraudulent"]
+    df = import_dataset('fake_job_postings.csv')
 
-df_adapted = df_adapted.drop_duplicates(subset=[train_col], keep="first").reset_index(drop=True)
-df_adapted = df_adapted[~df_adapted[train_col].str.contains("Aker Solutions")]
-df_adapted = df_adapted[~df_adapted[train_col].str.contains("following perks expert")]
+    train_col = "text"
+    valid_col = "fake"
 
-stop = init_stopword()
-df_adapted[train_col] = df_adapted.apply(lambda x: remove_noise(x[train_col], stop), axis=1)
+    df = df.drop_duplicates(subset=["description", "requirements"],
+                            keep="first").reset_index(drop=True)
 
-df_adapted.to_csv('fake_job_postings_processed_switched.csv', index=False)
-vizualise_data(df_adapted, train_col, valid_col)
+    columns = [train_col, valid_col]
+    index = range(0, len(df))
+
+    df_adapted = pandas.DataFrame(index=index, columns=columns)
+
+    for index, row in df.iterrows():
+        row = row.copy()
+        new_text = str(row["company_profile"]) + str(row["description"]) + str(row["requirements"])
+        df_adapted.loc[index, train_col] = new_text
+        df_adapted.loc[index, valid_col] = row["fraudulent"]
+
+    df_adapted = df_adapted.drop_duplicates(subset=[train_col], keep="first").reset_index(drop=True)
+
+    stop = init_stopword()
+    df_adapted[train_col] = df_adapted.apply(lambda x: remove_noise(x[train_col], stop), axis=1)
+
+    df_adapted.to_csv('fake_job_postings_processed_switched.csv', index=False)
+    vizualise_data(df_adapted, train_col, valid_col)
+
+
+if __name__ == "__main__":
+    preprocessing()

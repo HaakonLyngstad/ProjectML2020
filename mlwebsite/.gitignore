@@ -2,3 +2,10 @@
 /media
 
 datasets
+
+.models
+models/
+models
+
+images/
+images
