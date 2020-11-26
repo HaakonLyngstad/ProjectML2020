@@ -6,6 +6,7 @@ from sklearn import (
     svm,
     tree,
 )
+from sklearn.model_selection import GridSearchCV
 from sklearn import ensemble
 import xgboost
 import pandas
@@ -46,7 +47,9 @@ classifier_list = [
     ensemble.AdaBoostClassifier(dct, n_estimators=350, learning_rate=0.5),
     ensemble.BaggingClassifier(svm.SVC(C=10, gamma=1), n_estimators=100, n_jobs=-1),
     ensemble.RandomForestClassifier(),
-    xgboost.XGBClassifier(),
+    xgboost.XGBClassifier(max_depth=10,
+                          min_child_weight=1,
+                          scale_pos_weight=2),
     LSTM_model(input_length=MAX_SEQUENCE_LENGTH,
                EMBEDDING_DIM=EMBEDDING_DIM_LSTM,
                MAX_NB_WORDS=MAX_NB_WORDS,
