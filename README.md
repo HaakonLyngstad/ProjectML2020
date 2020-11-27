@@ -23,6 +23,7 @@ Note: Other python version might be sufficient, but this has not been tested.
 4. Write *venv\Scripts\activate*. You should now be inside a virtual enviroment (look for the (vevn) mark to the left of you command line
 5. Install all required libraries with *pip install -r "requirements.txt"* - this can take a while
 6. cd into "mlwebsite"
+7. Create a folder named "models". This is where the models will be saved.
 
 You should now be able to train your own models by running the "main.py" script (the one in the root of the repositry).
 
